@@ -71,46 +71,44 @@
       <parameter metaid="Fentanyl" id="Fentanyl" name="Fentanyl" value="0" constant="false"/>
       <parameter metaid="NO_DAMGO_Fentanyl" id="NO_DAMGO_Fentanyl" name="NO_DAMGO_Fentanyl" value="0" constant="false"/>
       <parameter metaid="NO_fiveHT" id="NO_fiveHT" name="NO_fiveHT" value="0" constant="false"/>
-      <parameter metaid="CTOP" id="CTOP" name="CTOP" value="0" />
       <parameter metaid="IBMXex" id="IBMXex" name="IBMXex" value="0" constant="false"/>
-      <parameter metaid="DMSO" id="DMSO" name="DMSO" value="0" />
       <parameter metaid="H89" id="H89" name="H89" value="0" constant="false"/>
       <parameter metaid="Sp8_Br_cAMPS_AM" id="Sp8_Br_cAMPS_AM" value="0" constant="false"/>
       <parameter metaid="Rp8_Br_cAMPS_pAB" id="Rp8_Br_cAMPS_pAB" value="0" constant="false"/>
       <parameter metaid="Rp8_pCPT_cAMPS_pAB" id="Rp8_pCPT_cAMPS_pAB" value="0" constant="false"/>
       <parameter metaid="Rp_cAMPS_pAB" id="Rp_cAMPS_pAB" value="0" constant="false"/>
       <parameter metaid="fourABnOH" id="fourABnOH" value="0" constant="false"/>      
-      <parameter metaid="kf_Fsk" id="kf_Fsk" value="999.991987450139"/>
-      <parameter metaid="kf_H89" id="kf_H89" value="0.000741493422675392"/>
-      <parameter metaid="kf_RII_2__RII_C_2" id="kf_RII_2__RII_C_2" value="1.26077939273477"/>
-      <parameter metaid="kf_RII_C_2__RII_2" id="kf_RII_C_2__RII_2" value="0.0187262534054505"/>
-      <parameter metaid="kf_RII_C_2__RIIp_C_2" id="kf_RII_C_2__RIIp_C_2" value="0.0227841500487899"/>
-      <parameter metaid="kf_RIIp_2__RII_2" id="kf_RIIp_2__RII_2" value="0.0323066621451248"/>
-      <parameter metaid="kf_RIIp_C_2__RII_C_2" id="kf_RIIp_C_2__RII_C_2" value="0.0256808704479994"/>
-      <parameter metaid="kf_RIIp_cAMP_C_2__RIIp_2" id="kf_RIIp_cAMP_C_2__RIIp_2" value="0.104924782853171"/>
-      <parameter metaid="kf_cAMP" id="kf_cAMP" value="0.49762030092122"/>      
-      <parameter metaid="KD_Fsk" id="KD_Fsk" value="14.2656743301721"/>
-      <parameter metaid="KD_H89" id="KD_H89" value="0.0480736009761681"/>
-      <parameter metaid="KD_IBMX" id="KD_IBMX" value="11.9768989891142"/>
-      <parameter metaid="KD_cAMP" id="KD_cAMP" value="2.84986906175302"/>    
-      <parameter metaid="ki_IBMX" id="ki_IBMX" value="999.99999996515"/>
-      <parameter metaid="ki_Rp8_Br_cAMPS_pAB" id="ki_Rp8_Br_cAMPS_pAB" value="6.39991617125844"/>
-      <parameter metaid="ki_Rp8_pCPT_cAMPS_pAB" id="ki_Rp8_pCPT_cAMPS_pAB" value="9.24294887100985"/>
-      <parameter metaid="ki_Rp_cAMPS_pAB" id="ki_Rp_cAMPS_pAB" value="0.0163472838984393"/>
-      <parameter metaid="ki_Sp8_Br_cAMPS_AM" id="ki_Sp8_Br_cAMPS_AM" value="0.131083036712545"/>      
-      <parameter metaid="kdeg_cAMP" id="kdeg_cAMP" value="1.00032978441703e-05"/>
-      <parameter metaid="kdeg_cAMP_free" id="kdeg_cAMP_free" value="7.35892283451732"/>
-      <parameter metaid="xi_AC_cAMP_Fsk" id="xi_AC_cAMP_Fsk" value="640.551657640036"/>
-      <parameter metaid="xi_KD_Rp8_Br_cAMPS" id="xi_KD_Rp8_Br_cAMPS" value="0.040150612333366"/>
-      <parameter metaid="xi_KD_Rp8_pCPT_cAMPS" id="xi_KD_Rp8_pCPT_cAMPS" value="0.194630402579553"/>
-      <parameter metaid="xi_KD_Rp_cAMPS" id="xi_KD_Rp_cAMPS" value="0.163369645426461"/>
-      <parameter metaid="xi_KD_Sp8_Br_cAMPS" id="xi_KD_Sp8_Br_cAMPS" value="0.222276461349335"/>
-      <parameter metaid="xi_b_Rp8_Br_cAMPS" id="xi_b_Rp8_Br_cAMPS" value="0.0408695544562406"/>
-      <parameter metaid="xi_b_Rp8_pCPT_cAMPS" id="xi_b_Rp8_pCPT_cAMPS" value="0.0268897774883765"/>
-      <parameter metaid="xi_b_Rp_cAMPS" id="xi_b_Rp_cAMPS" value="0.607960299288444"/>
-      <parameter metaid="xi_b_Sp8_Br_cAMPS" id="xi_b_Sp8_Br_cAMPS" value="21.7551956731725"/>
-      <parameter metaid="xi_kf_RII_2__RII_C_2" id="xi_kf_RII_2__RII_C_2" value="0.0189295042137343"/>
-      <parameter metaid="xi_kf_RII_C_2__RII_2" id="xi_kf_RII_C_2__RII_2" value="0.811223214879921"/>
+      <parameter metaid="kf_Fsk" id="kf_Fsk" value="0" constant="false"/>
+      <parameter metaid="kf_H89" id="kf_H89" value="0" constant="false"/>
+      <parameter metaid="kf_RII_2__RII_C_2" id="kf_RII_2__RII_C_2" value="0" constant="false"/>
+      <parameter metaid="kf_RII_C_2__RII_2" id="kf_RII_C_2__RII_2" value="0" constant="false"/>
+      <parameter metaid="kf_RII_C_2__RIIp_C_2" id="kf_RII_C_2__RIIp_C_2" value="0" constant="false"/>
+      <parameter metaid="kf_RIIp_2__RII_2" id="kf_RIIp_2__RII_2" value="0" constant="false"/>
+      <parameter metaid="kf_RIIp_C_2__RII_C_2" id="kf_RIIp_C_2__RII_C_2" value="0" constant="false"/>
+      <parameter metaid="kf_RIIp_cAMP_C_2__RIIp_2" id="kf_RIIp_cAMP_C_2__RIIp_2" value="0" constant="false"/>
+      <parameter metaid="kf_cAMP" id="kf_cAMP" value="0" constant="false"/>
+      <parameter metaid="KD_Fsk" id="KD_Fsk" value="0" constant="false"/>
+      <parameter metaid="KD_H89" id="KD_H89" value="0" constant="false"/>
+      <parameter metaid="KD_IBMX" id="KD_IBMX" value="0" constant="false"/>
+      <parameter metaid="KD_cAMP" id="KD_cAMP" value="0" constant="false"/>
+      <parameter metaid="ki_IBMX" id="ki_IBMX" value="0" constant="false"/>
+      <parameter metaid="ki_Rp8_Br_cAMPS_pAB" id="ki_Rp8_Br_cAMPS_pAB" value="0" constant="false"/>
+      <parameter metaid="ki_Rp8_pCPT_cAMPS_pAB" id="ki_Rp8_pCPT_cAMPS_pAB" value="0" constant="false"/>
+      <parameter metaid="ki_Rp_cAMPS_pAB" id="ki_Rp_cAMPS_pAB" value="0" constant="false"/>
+      <parameter metaid="ki_Sp8_Br_cAMPS_AM" id="ki_Sp8_Br_cAMPS_AM" value="0" constant="false"/>
+      <parameter metaid="kdeg_cAMP" id="kdeg_cAMP" value="0" constant="false"/>
+      <parameter metaid="kdeg_cAMP_free" id="kdeg_cAMP_free" value="0" constant="false"/>
+      <parameter metaid="xi_AC_cAMP_Fsk" id="xi_AC_cAMP_Fsk" value="0" constant="false"/>
+      <parameter metaid="xi_KD_Rp8_Br_cAMPS" id="xi_KD_Rp8_Br_cAMPS" value="0" constant="false"/>
+      <parameter metaid="xi_KD_Rp8_pCPT_cAMPS" id="xi_KD_Rp8_pCPT_cAMPS" value="0" constant="false"/>
+      <parameter metaid="xi_KD_Rp_cAMPS" id="xi_KD_Rp_cAMPS" value="0" constant="false"/>
+      <parameter metaid="xi_KD_Sp8_Br_cAMPS" id="xi_KD_Sp8_Br_cAMPS" value="0" constant="false"/>
+      <parameter metaid="xi_b_Rp8_Br_cAMPS" id="xi_b_Rp8_Br_cAMPS" value="0" constant="false"/>
+      <parameter metaid="xi_b_Rp8_pCPT_cAMPS" id="xi_b_Rp8_pCPT_cAMPS" value="0" constant="false"/>
+      <parameter metaid="xi_b_Rp_cAMPS" id="xi_b_Rp_cAMPS" value="0" constant="false"/>
+      <parameter metaid="xi_b_Sp8_Br_cAMPS" id="xi_b_Sp8_Br_cAMPS" value="0" constant="false"/>
+      <parameter metaid="xi_kf_RII_2__RII_C_2" id="xi_kf_RII_2__RII_C_2" value="0" constant="false"/>
+      <parameter metaid="xi_kf_RII_C_2__RII_2" id="xi_kf_RII_C_2__RII_2" value="0" constant="false"/>
       <parameter metaid="Fsk_level" id="Fsk_level" value="0" units="substance"/>
       <parameter metaid="Fsk_time" id="Fsk_time" value="0" units="time"/>      
       <parameter metaid="H89_level" id="H89_level" value="0" units="substance"/>
@@ -133,33 +131,33 @@
       <parameter metaid="DAMGO_level" id="DAMGO_level" name="DAMGO_level" value="0"/>  
       <parameter metaid="Fentanyl_time" id="Fentanyl_time" name="Fentanyl_time" value="0"/>
       <parameter metaid="Fentanyl_level" id="Fentanyl_level" name="Fentanyl_level" value="0"/>        
-      <parameter metaid="ks_AC_cAMP" id="ks_AC_cAMP" value="0.423299046028554"/>
-      <parameter metaid="rel_open" id="rel_open" name="rel_open" value="0"/>
-      <parameter metaid="xi_rel_open" id="xi_rel_open" name="xi_rel_open" value="0"/>
-      <parameter metaid="Calpha" id="Calpha" name="Calpha" value="0"/>
-      <parameter metaid="kf_DAMGO" id="kf_DAMGO" name="kf_DAMGO" value="1"/>
-      <parameter metaid="KD_DAMGO" id="KD_DAMGO" name="KD_DAMGO" value="1"/>
-      <parameter metaid="kf_Fentanyl" id="kf_Fentanyl" name="kf_Fentanyl" value="1"/>
-      <parameter metaid="KD_Fentanyl" id="KD_Fentanyl" name="KD_Fentanyl" value="1"/>
-      <parameter metaid="kf_5HT" id="kf_5HT" name="kf_5HT" value="1"/>
-      <parameter metaid="KD_5HT" id="KD_5HT" name="KD_5HT" value="1"/>
-      <parameter metaid="kdeg_DAMGO" id="kdeg_DAMGO" name="kdeg_DAMGO" value="1"/>
-      <parameter metaid="kdeg_Fentanyl" id="kdeg_Fentanyl" name="kdeg_Fentanyl" value="1"/>
-      <parameter metaid="kdeg_5HT" id="kdeg_5HT" name="kdeg_5HT" value="1"/>
-      <parameter metaid="kf_alphaS_GTP__alphaS_GDP" id="kf_alphaS_GTP__alphaS_GDP" name="kf_alphaS_GTP__alphaS_GDP" value="1"/>
-      <parameter metaid="kf_alphaI_GTP__alphaI_GDP" id="kf_alphaI_GTP__alphaI_GDP" name="kf_alphaI_GTP__alphaI_GDP" value="1"/>
-      <parameter metaid="kf_alphaI_GDP__betaI_gammaI____alphaI_betaI_gammaI" id="kf_alphaI_GDP__betaI_gammaI____alphaI_betaI_gammaI" name="kf_alphaI_GDP__betaI_gammaI____alphaI_betaI_gammaI" value="1"/>
-      <parameter metaid="kf_alphaS_GDP__betaS_gammaS____alphaS_betaS_gammaS" id="kf_alphaS_GDP__betaS_gammaS____alphaS_betaS_gammaS" name="kf_alphaS_GDP__betaS_gammaS____alphaS_betaS_gammaS" value="1"/>
-      <parameter metaid="kf_alphaS_betaS_gammaS" id="kf_alphaS_betaS_gammaS" name="kf_alphaS_betaS_gammaS" value="1"/>
-      <parameter metaid="xi_alphaS_betaS_gammaS__fiveHT4_5HT" id="xi_alphaS_betaS_gammaS__fiveHT4_5HT" name="xi_alphaS_betaS_gammaS__fiveHT4_5HT" value="1"/>
-      <parameter metaid="kf_alphaI_betaI_gammaI" id="kf_alphaI_betaI_gammaI" name="kf_alphaI_betaI_gammaI" value="1"/>
-      <parameter metaid="xi_alphaI_betaI_gammaI__MOR_DAMGO" id="xi_alphaI_betaI_gammaI__MOR_DAMGO" name="xi_alphaI_betaI_gammaI__MOR_DAMGO" value="1"/>
-      <parameter metaid="xi_alphaI_betaI_gammaI__MOR_Fentanyl" id="xi_alphaI_betaI_gammaI__MOR_Fentanyl" name="xi_alphaI_betaI_gammaI__MOR_Fentanyl" value="1"/>
-      <parameter metaid="kf_AC_alphaI_GTP" id="kf_AC_alphaI_GTP" name="kf_AC_alphaI_GTP" value="1"/>
-      <parameter metaid="KD_AC_alphaI_GTP" id="KD_AC_alphaI_GTP" name="KD_AC_alphaI_GTP" value="1"/>
-      <parameter metaid="kf_AC_alphaS_GTP" id="kf_AC_alphaS_GTP" name="kf_AC_alphaS_GTP" value="1"/>
-      <parameter metaid="KD_AC_alphaS_GTP" id="KD_AC_alphaS_GTP" name="KD_AC_alphaS_GTP" value="1"/>
-      <parameter metaid="xi_AC_cAMP_alphaS_GTP" id="xi_AC_cAMP_alphaS_GTP" name="xi_AC_cAMP_alphaS_GTP" value="1"/> 
+      <parameter metaid="ks_AC_cAMP" id="ks_AC_cAMP" value="0"  constant="false"/>
+      <parameter metaid="rel_open" id="rel_open" name="rel_open" value="0" constant="false"/>
+      <parameter metaid="xi_rel_open" id="xi_rel_open" name="xi_rel_open" value="0" constant="false"/>
+      <parameter metaid="Calpha" id="Calpha" name="Calpha" value="0" constant="false"/>
+      <parameter metaid="kf_DAMGO" id="kf_DAMGO" name="kf_DAMGO" value="0" constant="false"/>
+      <parameter metaid="KD_DAMGO" id="KD_DAMGO" name="KD_DAMGO" value="0" constant="false"/>
+      <parameter metaid="kf_Fentanyl" id="kf_Fentanyl" name="kf_Fentanyl" value="0" constant="false"/>
+      <parameter metaid="KD_Fentanyl" id="KD_Fentanyl" name="KD_Fentanyl" value="0" constant="false"/>
+      <parameter metaid="kf_5HT" id="kf_5HT" name="kf_5HT" value="0" constant="false"/>
+      <parameter metaid="KD_5HT" id="KD_5HT" name="KD_5HT" value="0" constant="false"/>
+      <parameter metaid="kdeg_DAMGO" id="kdeg_DAMGO" name="kdeg_DAMGO" value="0" constant="false"/>
+      <parameter metaid="kdeg_Fentanyl" id="kdeg_Fentanyl" name="kdeg_Fentanyl" value="0" constant="false"/>
+      <parameter metaid="kdeg_5HT" id="kdeg_5HT" name="kdeg_5HT" value="0" constant="false"/>
+      <parameter metaid="kf_alphaS_GTP__alphaS_GDP" id="kf_alphaS_GTP__alphaS_GDP" name="kf_alphaS_GTP__alphaS_GDP" value="0" constant="false"/>
+      <parameter metaid="kf_alphaI_GTP__alphaI_GDP" id="kf_alphaI_GTP__alphaI_GDP" name="kf_alphaI_GTP__alphaI_GDP" value="0" constant="false"/>
+      <parameter metaid="kf_alphaI_GDP__betaI_gammaI____alphaI_betaI_gammaI" id="kf_alphaI_GDP__betaI_gammaI____alphaI_betaI_gammaI" name="kf_alphaI_GDP__betaI_gammaI____alphaI_betaI_gammaI" value="0" constant="false"/>
+      <parameter metaid="kf_alphaS_GDP__betaS_gammaS____alphaS_betaS_gammaS" id="kf_alphaS_GDP__betaS_gammaS____alphaS_betaS_gammaS" name="kf_alphaS_GDP__betaS_gammaS____alphaS_betaS_gammaS" value="0" constant="false"/>
+      <parameter metaid="kf_alphaS_betaS_gammaS" id="kf_alphaS_betaS_gammaS" name="kf_alphaS_betaS_gammaS" value="0" constant="false"/>
+      <parameter metaid="xi_alphaS_betaS_gammaS__fiveHT4_5HT" id="xi_alphaS_betaS_gammaS__fiveHT4_5HT" name="xi_alphaS_betaS_gammaS__fiveHT4_5HT" value="0" constant="false"/>
+      <parameter metaid="kf_alphaI_betaI_gammaI" id="kf_alphaI_betaI_gammaI" name="kf_alphaI_betaI_gammaI" value="0"/>
+      <parameter metaid="xi_alphaI_betaI_gammaI__MOR_DAMGO" id="xi_alphaI_betaI_gammaI__MOR_DAMGO" name="xi_alphaI_betaI_gammaI__MOR_DAMGO" value="0" constant="false"/>
+      <parameter metaid="xi_alphaI_betaI_gammaI__MOR_Fentanyl" id="xi_alphaI_betaI_gammaI__MOR_Fentanyl" name="xi_alphaI_betaI_gammaI__MOR_Fentanyl" value="0" constant="false"/>
+      <parameter metaid="kf_AC_alphaI_GTP" id="kf_AC_alphaI_GTP" name="kf_AC_alphaI_GTP" value="0" constant="false"/>
+      <parameter metaid="KD_AC_alphaI_GTP" id="KD_AC_alphaI_GTP" name="KD_AC_alphaI_GTP" value="0" constant="false"/>
+      <parameter metaid="kf_AC_alphaS_GTP" id="kf_AC_alphaS_GTP" name="kf_AC_alphaS_GTP" value="0" constant="false"/>
+      <parameter metaid="KD_AC_alphaS_GTP" id="KD_AC_alphaS_GTP" name="KD_AC_alphaS_GTP" value="0" constant="false"/>
+      <parameter metaid="xi_AC_cAMP_alphaS_GTP" id="xi_AC_cAMP_alphaS_GTP" name="xi_AC_cAMP_alphaS_GTP" value="0" constant="false"/>
     </listOfParameters>
     <listOfRules>
       <assignmentRule metaid="CDMT00167" variable="Fsk">
