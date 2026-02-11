@@ -1,0 +1,23 @@
+model_name: PKAcycleMOR
+model_dir: 'PKAcycleMOR'
+tolerances:
+  atol: 1.e-10
+  rtol: 1.e-13
+  max_steps: 10000000
+  n_threads: 1
+#  SteadyStateSensitivityMode: 'newtonOnly'
+simulate:
+  n_threads: 1
+  n_simulations: 1000
+optimize:
+  n_procs: 10
+  n_optimizations: 1000
+  optimizer:
+    name: fides
+    exitflags: [1]
+    optimizer_options:
+      maxiter: 500
+      autosave: False
+      save_histories: True
+petab_model_yaml: PKAcycleMOR.yaml
+
