@@ -1,0 +1,13 @@
+format_version: 1
+parameter_file: parameters_PKAcycleMOR.tsv
+problems:
+- condition_files:
+  - experimentalCondition_PKAcycleMOR.tsv
+  measurement_files:
+  - measurementData_PKAcycleMOR.tsv
+  observable_files:
+  - observables_PKAcycleMOR.tsv
+  sbml_files:
+  - PKAcycleMOR_model.xml
+  visualization_files:
+  - visualizationSpecification_PKAcycleMOR.tsv
