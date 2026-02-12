@@ -2,6 +2,7 @@ import logging
 import os
 import yaml
 
+from pathlib import Path
 from typing import Iterable, List, Optional, Union
 from shutil import copy
 
@@ -9,19 +10,23 @@ import amici
 import amici.petab
 import amici.petab.simulations
 import fides
+import numpy as np
 import pandas as pd
 import petab
 import petab.v1.visualize
 import pypesto
 import pypesto.optimize
 import pypesto.petab
+import pypesto.profile as profile
+import scipy as sp
 
 from pypesto.store import OptimizationResultHDF5Reader, \
     OptimizationResultHDF5Writer, ProblemHDF5Writer, ProblemHDF5Reader, \
     ProfileResultHDF5Writer, write_result, ProfileResultHDF5Reader
 from utils import (_model_import, _setup_amici, create_pypesto_problem, get_best_parameters,
                    read_optimization_results)
-from visualization import plot_residuals, visualize_fit, visualize_optimization_result
+from visualization import (plot_residuals, visualize_fit, visualize_optimization_result,
+                           visualize_profiles)
 
 
 def sample_startpoints(amici_model, petab_problem, base_dir, results_dir,
@@ -130,6 +135,7 @@ def simulate_and_visualize(model_name: str,
                            results_dir: str,
                            type: str = ''): # can be smooth, extended, validation, in_silico
 
+    # Figure 2,a
     visualize_optimization_result(results_dir, figures_dir, model_name)
 
     for i in range(1):
@@ -148,6 +154,7 @@ def simulate_and_visualize(model_name: str,
                      visu_spec=os.path.join(petab_dir,
                                             'visualizationSpecification_PKAcycleMOR.tsv'))
 
+    # Figure 2,b
     plot_residuals(petab_problem, os.path.join(results_dir, 'simulation_0/simulation.tsv'),
                   figures_dir)
 
@@ -244,6 +251,77 @@ def optimize(amici_model,
     opt_result_writer.write(minimize_result, overwrite=True)
 
 
+def create_profiles(
+        amici_model,
+        petab_problem: petab.v1.Problem,
+        base_dir: str,
+        figures_dir: str,
+        result_path: str,
+        tolerances: dict,
+        optimize_config: dict,
+        profile_index: Iterable[int] = None,
+        alpha: float = 0.01
+):
+    n_procs = optimize_config['n_procs']
+    opt_result = read_optimization_results(result_path)
+    pypesto_problem, _, _ = create_pypesto_problem(
+        base_dir, amici_model, petab_problem, tolerances)
+
+    if n_procs > 1:
+        engine = pypesto.engine.MultiProcessEngine(n_procs=n_procs)
+        print(f"MultiProcessEngine, number of processes: {n_procs}")
+    else:
+        engine = pypesto.engine.SingleCoreEngine()
+        print("SingleCoreEngine")
+
+    optimizer_options = {
+        'maxiter': optimize_config['optimizer']['optimizer_options'].get(
+            'maxiter', 1e3)}
+    optimizer = pypesto.optimize.FidesOptimizer(
+        hessian_update=fides.BFGS(),
+        options=optimizer_options
+    )
+    profile_options = profile.ProfileOptions(
+            default_step_size=0.005,
+            min_step_size=0.001,
+            delta_ratio_max=0.05,
+            ratio_min=np.exp(-sp.stats.chi2.ppf(1-alpha, 1) / 2)
+        )
+
+    result = profile.parameter_profile(
+        problem=pypesto_problem,
+        result=opt_result,
+        profile_index=profile_index,
+        optimizer=optimizer,
+        engine=engine,
+        profile_options=profile_options
+    )
+    pypesto_profile_writer = ProfileResultHDF5Writer(
+        os.path.join(results_dir, 'profile_results.h5'))
+    pypesto_profile_writer.write(result)
+
+    visualize_profiles(result, figures_dir)
+
+
+def combine_profile_results(results,
+                            profiles_files: Union[Union[str, Path], List[Union[str, Path]]],
+                            out_path: str):
+
+    for profile_result in profiles_files:
+        pypesto_profile_reader = ProfileResultHDF5Reader(
+            os.path.join(profile_result))
+        profile_read = pypesto_profile_reader.read()
+        if len(results.profile_result.list) == 0:
+            results.profile_result = profile_read.profile_result
+        else:
+            for idx, res in enumerate(profile_read.profile_result.list[0]):
+                if res is not None:
+                    results.profile_result.list[0][idx] = profile_read.profile_result.list[0][idx]
+
+    pypesto_profile_writer = ProfileResultHDF5Writer(out_path)
+    pypesto_profile_writer.write(results)
+
+
 if __name__ == "__main__":
     base_dir = '../model'
     config_path = os.path.join(base_dir, 'config.yaml')
@@ -292,3 +370,10 @@ if __name__ == "__main__":
                            figures_dir=figures_dir,
                            results_dir=results_dir,
                            type='')
+
+    # compute posteriors profiles for all parameters
+    create_profiles(model, model_petab_problem, base_dir,
+                    figures_dir=figures_dir,
+                    result_path=os.path.join(results_dir, 'result.h5'),
+                    tolerances=config['tolerances'],
+                    optimize_config=config['optimize'])
