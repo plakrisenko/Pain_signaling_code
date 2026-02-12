@@ -5,6 +5,9 @@ import yaml
 from typing import Iterable, List, Optional, Union
 from shutil import copy
 
+import amici
+import amici.petab
+import amici.petab.simulations
 import fides
 import pandas as pd
 import petab
@@ -16,7 +19,9 @@ import pypesto.petab
 from pypesto.store import OptimizationResultHDF5Reader, \
     OptimizationResultHDF5Writer, ProblemHDF5Writer, ProblemHDF5Reader, \
     ProfileResultHDF5Writer, write_result, ProfileResultHDF5Reader
-from utils import (_model_import, create_pypesto_problem, read_optimization_results)
+from utils import (_model_import, _setup_amici, create_pypesto_problem, get_best_parameters,
+                   read_optimization_results)
+from visualization import plot_residuals, visualize_fit, visualize_optimization_result
 
 
 def sample_startpoints(amici_model, petab_problem, base_dir, results_dir,
@@ -39,6 +44,112 @@ def sample_startpoints(amici_model, petab_problem, base_dir, results_dir,
         os.path.join(results_dir, f'parameter_startpoints_{n_starts}{pf}.tsv'),
         sep='\t', index=False)
 
+
+def save_best_100(opt_result, fname):
+    opt_result.optimize_result.list = opt_result.optimize_result.list[:100]
+
+    write_result(
+        opt_result, fname,
+        problem=opt_result.problem is not None,
+        optimize=True)
+
+
+def simulate_w_best_parameter(amici_model,
+                              petab_problem: petab.v1.Problem,
+                              petab_dir: str,
+                              tolerances: dict,
+                              result_path: str,
+                              p_index: int = 0,
+                              type: str = ''):
+
+    results = read_optimization_results(result_path)
+    p_vect = results.optimize_result.x[p_index]
+    p_vect = results.problem.get_full_vector(p_vect,
+                                             results.problem.x_fixed_vals)
+
+    amici_model, solver = _setup_amici(amici_model, tolerances)
+
+    parameters = dict(zip(results.problem.x_names, p_vect))
+
+    if hasattr(results.problem, 'inner_x_names'):
+        innter_x_names = list(map(lambda x: x.decode('utf-8'),
+                                  results.problem.inner_x_names))
+        parameters.update(
+            dict(zip(innter_x_names,
+                     results.optimize_result.list[0].inner_parameters)))
+
+    if type == 'smooth':
+        measurement_df = petab_problem.measurement_df
+        extended_measurements_df = pd.read_csv(
+            os.path.join(petab_dir, 'measurements_smooth.tsv'),
+            sep='\t'
+        )
+        petab_problem.measurement_df = extended_measurements_df
+
+        simulation_result = amici.petab.simulations.simulate_petab(
+            petab_problem, amici_model, solver,
+            problem_parameters=parameters,
+            scaled_parameters=True
+        )
+
+        sim_df = amici.petab.simulations.rdatas_to_simulation_df(
+            rdatas=simulation_result['rdatas'],
+            model=amici_model,
+            measurement_df=petab_problem.measurement_df)
+        petab.write_simulation_df(sim_df,
+                                  os.path.join(os.path.dirname(result_path),
+                                               f'simulation_{p_index}',
+                                               'simulation_smooth.tsv'))
+        petab_problem.measurement_df = measurement_df
+
+    else:
+        simulation_result = amici.petab.simulations.simulate_petab(
+            petab_problem, amici_model, solver,
+            problem_parameters=parameters,
+            scaled_parameters=True
+        )
+
+        sim_df = amici.petab.simulations.rdatas_to_simulation_df(
+            rdatas=simulation_result['rdatas'],
+            model=amici_model,
+            measurement_df=petab_problem.measurement_df)
+
+        pfx = f"_{type}" if type else ""
+        petab.v1.write_simulation_df(sim_df,
+                                  os.path.join(os.path.dirname(result_path),
+                                               f'simulation_{p_index}',
+                                               f'simulation{pfx}.tsv'))
+
+
+def simulate_and_visualize(model_name: str,
+                           amici_model,
+                           petab_problem: petab.v1.Problem,
+                           tolerances: dict,
+                           petab_dir: str,
+                           figures_dir: str,
+                           results_dir: str,
+                           type: str = ''): # can be smooth, extended, validation, in_silico
+
+    visualize_optimization_result(results_dir, figures_dir, model_name)
+
+    for i in range(1):
+        simulation_folder = os.path.join(results_dir, f'simulation_{i}')
+        os.makedirs(figures_dir, exist_ok=True)
+        simulate_w_best_parameter(amici_model, petab_problem, petab_dir,
+                                  tolerances,
+                                  os.path.join(results_dir, 'result.h5'),
+                                  p_index=i,
+                                  type=type)
+
+        simu_fn = f'simulation_{type}.tsv' if type else 'simulation.tsv'
+        visualize_fit(petab_problem,
+                     os.path.join(simulation_folder, simu_fn),
+                     os.path.join(simulation_folder, type) if type else simulation_folder,
+                     visu_spec=os.path.join(petab_dir,
+                                            'visualizationSpecification_PKAcycleMOR.tsv'))
+
+    plot_residuals(petab_problem, os.path.join(results_dir, 'simulation_0/simulation.tsv'),
+                  figures_dir)
 
 def optimize(amici_model,
              petab_problem: petab.v1.Problem,
@@ -168,3 +279,16 @@ if __name__ == "__main__":
             results_dir,
             f"parameter_startpoints_{config['optimize']['n_optimizations']}.tsv"))
 
+    results = read_optimization_results(os.path.join(results_dir, 'result.h5'),
+                                       os.path.join(results_dir, 'histories', 'hist_result.h5'),
+                                       read_histories=False)
+
+    get_best_parameters(results, n_par_vector=1, end_p=True,
+                        out_path=os.path.join(results_dir, "best_parameter_vector.tsv"))
+
+    simulate_and_visualize(model_name, model, model_petab_problem,
+                           config['tolerances'],
+                           petab_dir,
+                           figures_dir=figures_dir,
+                           results_dir=results_dir,
+                           type='')
