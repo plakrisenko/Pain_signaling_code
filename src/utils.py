@@ -9,7 +9,7 @@ This module provides helper functions to:
 """
 
 import os
-from typing import Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import amici
 import amici.petab
@@ -113,6 +113,123 @@ def _setup_amici(
     return amici_model, amici_solver
 
 
+# Mapping from internal parameter/experiment identifiers to display-friendly
+# labels (LaTeX or short names). 
+PARAMETER_DISPLAY_MAP = [
+    # PKA and cAMP
+    ('xi_kf_RII_C_2__RII_2',
+     '$\\xi_{\\text{k}_\\text{f}, \\text{RII}_2:\\text{C}_2, \\text{RII}_2}$'),
+    ('xi_kf_RII_2__RII_C_2',
+     '$\\xi_{\\text{k}_\\text{f}, \\text{RII}_2, \\text{RII}_2:\\text{C}_2}$'),
+    ('kf_RIIp_cAMP_C_2__RIIp_2',
+     'k$_{\\text{f}, \\text{pRII}_2:\\text{C}_2:\\text{cAMP}_4, \\text{pRII}_2}$'),
+    ('kf_RIIp_C_2__RII_C_2',
+     'k$_{\\text{f}, \\text{pRII}_2:\\text{C}_2, \\text{RII}_2:\\text{C}_2}$'),
+    ('kf_RIIp_2__RII_2', 'k$_{\\text{f}, \\text{pRII}_2, \\text{RII}_2}$'),
+    ('kf_RII_C_2__RIIp_C_2',
+     'k$_{\\text{f}, \\text{RII}_2:\\text{C}_2, \\text{pRII}_2:\\text{C}_2}$'),
+    ('kf_RII_C_2__RII_2', 'k$_{\\text{f}, \\text{RII}_2:\\text{C}_2, \\text{RII}_2}$'),
+    ('kf_RII_2__RII_C_2', 'k$_{\\text{f}, \\text{RII}_2, \\text{RII}_2:\\text{C}_2}$'),
+
+    ('xi_AC_cAMP_Fsk', '$\\xi_{\\text{AC}, \\text{cAMP}, \\text{Fsk}}$'),
+    ('ks_AC_cAMP', 'k$_{\\text{s}, \\text{AC}, \\text{cAMP}}$'),
+    ('kf_Fsk', 'k$_{\\text{f}, \\text{Fsk}}$'),
+    ('kdeg_cAMP_free', 'k$_{\\text{deg}, \\text{cAMP}, \\text{free}}$'),
+    ('kf_cAMP', 'k$_{\\text{f}, \\text{cAMP}}$'),
+    ('kdeg_cAMP', 'k$_{\\text{deg}, \\text{cAMP}}$'),
+    ('KD_cAMP', 'K$_{\\text{D}, \\text{cAMP}}$'),
+    ('ki_IBMX', 'k$_{\\text{i}, \\text{IBMX}}$'),
+    ('KD_IBMX', 'K$_{\\text{D}, \\text{IBMX}}$'),
+    ('kf_H89', 'k$_{\\text{f}, \\text{H-89}}$'),
+    ('KD_H89', 'K$_{\\text{D}, \\text{H-89}}$'),
+    ('KD_Fsk', 'K$_{\\text{D}, \\text{Fsk}}$'),
+
+    # receptors
+    ('kdeg_5HT', 'k$_{\\text{int}, \\text{5-HT}}$'),
+    ('KD_5HT', 'K$_{\\text{D}, \\text{5-HT}}$'),
+    ('kf_5HT', 'k$_{\\text{f}, \\text{5-HT}}$'),
+
+    ('kdeg_DAMGO', 'k$_{\\text{int}, \\text{DAMGO}}$'),
+    ('KD_DAMGO', 'K$_{\\text{D}, \\text{DAMGO}}$'),
+    ('kf_DAMGO', 'k$_{\\text{f}, \\text{DAMGO}}$'),
+
+    ('kdeg_Fentanyl', 'k$_{\\text{int}, \\text{Fentanyl}}$'),
+    ('KD_Fentanyl', 'K$_{\\text{D}, \\text{Fentanyl}}$'),
+    ('kf_Fentanyl', 'k$_{\\text{f}, \\text{Fentanyl}}$'),
+
+    ('xi_b_Sp8_Br_cAMPS', '$\\xi_{\\text{b}, \\text{Sp-8-Br-cAMPS}}$'),
+    ('xi_b_Rp_cAMPS', '$\\xi_{\\text{b}, \\text{Rp-cAMPS}}$'),
+    ('xi_b_Rp8_pCPT_cAMPS', '$\\xi_{\\text{b}, \\text{Rp-8-pCPT-cAMPS}}$'),
+    ('xi_b_Rp8_Br_cAMPS', '$\\xi_{\\text{b}, \\text{Rp-8-Br-cAMPS}}$'),
+
+    ('xi_KD_Sp8_Br_cAMPS', '$\\xi_{K_\\text{D}, \\text{Sp-8-Br-cAMPS}}$'),
+    ('xi_KD_Rp_cAMPS', '$\\xi_{K_\\text{D}, \\text{Rp-cAMPS}}$'),
+    ('xi_KD_Rp8_pCPT_cAMPS', '$\\xi_{K_\\text{D}, \\text{Rp-8-pCPT-cAMPS}}$'),
+    ('xi_KD_Rp8_Br_cAMPS', '$\\xi_{K_\\text{D}, \\text{Rp-8-Br-cAMPS}}$'),
+
+    ('ki_Sp8_Br_cAMPS_AM', '$k_{\\text{i}, \\text{Sp-8-Br-cAMPS-AM}}$'),
+    ('ki_Rp_cAMPS_pAB', '$k_{\\text{i}, \\text{Rp-cAMPS-pAB}}$'),
+    ('ki_Rp8_pCPT_cAMPS_pAB', '$k_{\\text{i}, \\text{Rp-8-pCPT-cAMPS-pAB}}$'),
+    ('ki_Rp8_Br_cAMPS_pAB', '$k_{\\text{i}, \\text{Rp-8-Br-cAMPS-pAB}}$'),
+
+    ('xi_AC_cAMP_alphaS_GTP', '$\\xi_{\\text{AC}, \\text{cAMP}, \\alpha_\\text{S}\\text{GTP}}$'),
+    ('KD_AC_alphaS_GTP', 'K$_{\\text{D}, \\text{AC}, \\alpha_\\text{S}\\text{GTP}}$'),
+    ('kf_AC_alphaS_GTP', 'k$_{\\text{f}, \\text{AC}, \\alpha_\\text{S}\\text{GTP}}$'),
+    ('KD_AC_alphaI_GTP', 'K$_{\\text{D}, \\text{AC}, \\alpha_\\text{I}\\text{GTP}}$'),
+    ('kf_AC_alphaI_GTP', 'k$_{\\text{f}, \\text{AC}, \\alpha_\\text{I}\\text{GTP}}$'),
+    ('kf_alphaI_GTP__alphaI_GDP', 'k$_{\\text{f}, \\alpha_\\text{I}\\text{GTP}, '
+                                  '\\alpha_\\text{I}\\text{GDP}}$'),
+    ('kf_alphaS_GTP__alphaS_GDP', 'k$_{\\text{f}, \\alpha_\\text{S}\\text{GTP}, '
+                                  '\\alpha_\\text{S}\\text{GDP}}$'),
+    ('xi_alphaI_betaI_gammaI__MOR_Fentanyl', '$\\xi_{\\alpha_I\\beta_I\\gamma_I, '
+                                             '\\text{MOR}, \\text{Fentanyl}}$'),
+    ('xi_alphaI_betaI_gammaI__MOR_DAMGO', '$\\xi_{\\alpha_I\\beta_I\\gamma_I, '
+                                          '\\text{MOR}, \\text{DAMGO}}$'),
+    ('kf_alphaI_betaI_gammaI', 'k$_{\\text{f}, \\alpha_I\\beta_I\\gamma_I}$'),
+    ('xi_alphaS_betaS_gammaS__fiveHT4_5HT', '$\\xi_{\\alpha_S\\beta_S\\gamma_S, \\text{5-HT}_4, '
+                                            '\\text{5-HT}}$'),
+    ('kf_alphaS_betaS_gammaS', 'k$_{\\text{f}, \\alpha_S\\beta_S\\gamma_S}$'),
+    ('kf_alphaS_GDP__betaS_gammaS____alphaS_betaS_gammaS',
+     'k$_{\\text{f}, \\alpha_S\\text{GDP}, \\beta_S\\gamma_S, \\alpha_S\\beta_S\\gamma_S}$'),
+    ('kf_alphaI_GDP__betaI_gammaI____alphaI_betaI_gammaI',
+     'k$_{\\text{f}, \\alpha_I\\text{GDP}, \\beta_I\\gamma_I, \\alpha_I\\beta_I\\gamma_I}$'),
+]
+
+
+def parameter_names_display(x: str) -> str:
+    """Return a display-friendly label for a parameter name.
+
+    Args:
+        x: Parameter or experiment identifier to convert. Any non-string
+            value is converted with ``str()``; passing ``None`` returns an
+            empty string.
+
+    Returns:
+        A string suitable for use in figure labels or legends.
+    """
+    if x is None:
+        return ''
+
+    s = str(x)
+    s = s.replace('JI09_150302_Drg345_343_CycNuc', 'exp1')
+    s = s.replace('JI09_150330_Drg350_348_CycNuc', 'exp2')
+    s = s.replace('JI09_150330_Drg353_351_CycNuc', 'exp3')
+    s = s.replace('JI09_151102_Drg421_418_Age', 'exp4')
+    s = s.replace('JI09_160201_Drg453_452_CycNuc', 'exp6')
+
+    s = s.replace('LK041_39_MOR_Kinetic_Fentanyl_Fsk', 'exp7')
+    s = s.replace('LK023_21_MOR_Kinetik_DAMGO_Fsk', 'exp8')
+    s = s.replace('LK15_150727_LK051_48_MOR_Kinetic_10min_Fentanyl_Fsk', 'exp9')
+    s = s.replace('LK15_150810_LK053_52_047_46_MOR_Kinetic_Fentanyl_5HT', 'exp10')
+    s = s.replace('LK020_18_LK014_12_MOR_Kinetik_DAMGO_5HT', 'exp11')
+    s = s.replace('JI09_140331_Drg270_267_TiM', 'exp12')
+
+    for old, new in PARAMETER_DISPLAY_MAP:
+        if s == old:
+            return new
+    return s
+
+
 def condition_id_to_label(petab_problem, cond_id: str) -> str:
     """Map a PEtab simulation condition ID to the visualization legend label.
 
@@ -157,13 +274,16 @@ def dataset_id_to_label(petab_problem, dataset_id: str) -> str:
         'legendEntry'].values[0]
 
 
-def create_pypesto_problem(base_dir, amici_model, petab_problem,
-                           tolerances, hierarchical: bool = False):
+def create_pypesto_problem(base_dir: str,
+                           amici_model: amici.Model,
+                           petab_problem: petab.v1.Problem,
+                           tolerances: Dict[str, Any],
+                           hierarchical: bool = False):
     """Create a PyPESTO problem and a corresponding startpoint method.
 
     Args:
         base_dir: Base output directory where the importer will write model
-            artifacts.
+            artifacts (string path).
         amici_model: Configured AMICI model instance.
         petab_problem: Loaded `petab.v1.Problem` instance.
         tolerances: Dict-like object containing solver/tolerance options. The

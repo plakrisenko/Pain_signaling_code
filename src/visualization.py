@@ -12,9 +12,10 @@ Provided functions:
 
 import os
 
-from typing import Optional
+from typing import Optional, Sequence
 
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import petab
 import petab.v1.visualize
 import petab.v1.visualize.plotting
@@ -22,10 +23,13 @@ import pypesto.visualize
 import numpy as np
 import scipy as sp
 
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Rectangle
+from matplotlib.ticker import PercentFormatter
 from petab.v1.visualize.plotter import MPLPlotter
 from petab.v1.visualize.plotting import VisSpecParser
 
-from utils import read_optimization_results
+from utils import (read_optimization_results, parameter_names_display)
 plt.style.use('tableau-colorblind10')
 
 
@@ -65,7 +69,8 @@ def plot_residuals(petab_problem: petab.v1.Problem,
 
     titles = ['pRII', 'pRII immunoblotting', 'C$_{\\alpha}$']
     for obs, title in zip(
-            [['pRII_Microscopy', 'pRII_Microscopy_LK15_150727'], ['pRII_Western'], ['Calpha_Microscopy']],
+            [['pRII_Microscopy', 'pRII_Microscopy_LK15_150727'], ['pRII_Western'],
+             ['Calpha_Microscopy']],
             titles):
         measurement_subset = measurement_df[measurement_df['observableId'].isin(obs)]
         simulations_subset = simulations_df[simulations_df['observableId'].isin(obs)]
@@ -252,3 +257,215 @@ def visualize_profiles(result, out_dir, profile_indices=None, pf=''):
     pypesto.visualize.profile_cis(result, profile_indices=profile_indices, show_bounds=True, ax=ax)
     plt.tight_layout()
     plt.savefig(os.path.join(out_dir, f'profile_cis{pf}.png'))
+
+
+def profile_cis(
+        result: pypesto.Result,
+        figures_dir: str,
+        pf: str,
+        profile_indices: Sequence[int] = None,
+        profile_list: int = 0,
+        ax: mpl.axes.Axes = None,
+        rotation: str = 'v', # 'v' or 'h'
+):
+
+    problem = result.problem
+    profile_list = result.profile_result.list[profile_list]
+    fval0 = result.optimize_result.fval[0]
+
+    plt.rcParams.update({'font.size': 24,
+                         'figure.autolayout': False,
+                         'figure.titlesize': 'x-large',
+                         'xtick.labelsize': 22,
+                         'ytick.labelsize': 22,
+                         'lines.markersize': 12,
+                         'lines.linewidth': 3,
+                         'legend.fontsize': 'x-small'
+                         })
+
+    if profile_indices is None:
+        profile_indices = [ix for ix, res in enumerate(profile_list) if res]
+
+    if ax is None:
+        _, ax = plt.subplots()
+
+    ws = [0.2, 0.4, 0.6]
+    colors_identifiable = ["#a3cce9", "#5fa2ce", "#1170aa"]
+    colors_nonidentifiable = ["#ffbc79", "#fc7d0b", "#C85200"]
+    parameter_identifiability = [True]*len(profile_indices)  # placeholder
+    for i, confidence_level in enumerate([0.99, 0.95, 0.9]):
+        k = 1
+        diff = sp.stats.chi2.ppf(confidence_level, k) / 2
+
+        xs_list = []
+        x = -ws[i]/2
+        rectangles = []
+        colors = []
+        for j, i_par in enumerate(profile_indices):
+            conf_l_indices = [idx for idx, fval in enumerate(profile_list[i_par].fval_path) if
+                              fval-fval0<=diff]
+            xs = profile_list[i_par].x_path[i_par][conf_l_indices]
+            xs_list.append(xs)
+            par_ci = [np.min(xs), np.max(xs)]
+
+            if (par_ci[0] - result.problem.lb_full[i_par])<0.05 or (result.problem.ub_full[i_par]
+                                                                    - par_ci[1])<0.05:
+                parameter_identifiability[j] = False
+            h = par_ci[1] - par_ci[0]
+
+            if rotation == 'v':
+                rectangles.append(
+                    Rectangle((par_ci[0], x), h, ws[i]))
+            else:
+                rectangles.append(
+                    Rectangle((x, par_ci[0]), ws[i], h))
+            x += 1
+
+            if rotation == 'v':
+                ax.plot([result.problem.lb_full[i_par]]*2, [j-0.4, j+0.4], color='grey')
+                ax.plot([result.problem.ub_full[i_par]]*2, [j-0.4, j+0.4], color='grey')
+            else:
+                ax.plot([j-0.4, j+0.4], [result.problem.lb_full[i_par]]*2, color='grey')
+                ax.plot([j-0.4, j+0.4], [result.problem.ub_full[i_par]]*2, color='grey')
+
+            colors.append(colors_identifiable[i] if parameter_identifiability[j] else
+                          colors_nonidentifiable[i])
+        ax.add_collection(PatchCollection(rectangles, facecolors=colors, edgecolors="dimgrey"))
+
+    x_names = [parameter_names_display(problem.x_names[ix]) for ix in profile_indices]
+
+    parameters_ind = np.arange(0, len(profile_indices))
+
+    if rotation == 'v':
+        ax.set_yticks(parameters_ind)
+        ax.set_yticklabels(x_names)
+        ax.set_ylabel("Parameter")
+        ax.set_xlabel("log$_{10}$(parameter value)")
+        ax.set_xlim(-5.2, 5.2)
+        ax.set_ylim(-1, len(profile_indices))
+    else:
+        ax.set_xticks(parameters_ind)
+        ax.set_xticklabels(x_names)
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+        ax.set_xlabel("Parameter")
+        ax.set_ylabel("log$_{10}$(parameter value)")
+        ax.set_ylim(-5.2, 5.2)
+        ax.set_xlim(-1, len(profile_indices))
+
+    plt.savefig(os.path.join(figures_dir, f'profile_cis_{pf}.svg'))
+
+    fig, ax = plt.subplots(figsize=(6, 2))
+
+    labels = ["A"]
+    p1 = np.sum(parameter_identifiability)/len(parameter_identifiability)
+    p2 = 1 - p1
+
+    ax.barh(labels, p1, label="Part 1", color=colors_identifiable[1])
+    ax.barh(labels, p2, left=p1, label="Part 2", color=colors_nonidentifiable[1])
+
+    ax.text(p1 / 2, 0, f"{p1 * 100:.0f}%",
+            va='center', ha='center', color='white', fontsize=20)
+    ax.text(p1 + p2 / 2, 0, f"{p2 * 100:.0f}%",
+            va='center', ha='center', color='white', fontsize=20)
+
+    # format x-axis ticks as percentages
+    ax.xaxis.set_major_formatter(PercentFormatter(1.0))
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(figures_dir, f'identifiability_fraction_{pf}.svg'))
+
+    return ax
+
+
+def visualize_profile_confidence_intervals(result, figures_dir: str, rotation: str = 'v'):
+    parameter_groups = {
+        'Gproteins': [
+            'kf_alphaI_GDP__betaI_gammaI____alphaI_betaI_gammaI',
+            'kf_alphaS_GDP__betaS_gammaS____alphaS_betaS_gammaS',
+            'kf_alphaS_betaS_gammaS',
+            'xi_alphaS_betaS_gammaS__fiveHT4_5HT',
+            'kf_alphaI_betaI_gammaI',
+            'xi_alphaI_betaI_gammaI__MOR_DAMGO',
+            'xi_alphaI_betaI_gammaI__MOR_Fentanyl',
+            'kf_alphaS_GTP__alphaS_GDP',
+            'kf_alphaI_GTP__alphaI_GDP',
+            'kf_AC_alphaI_GTP',
+            'KD_AC_alphaI_GTP',
+            'kf_AC_alphaS_GTP',
+            'KD_AC_alphaS_GTP',
+            'xi_AC_cAMP_alphaS_GTP',
+        ],
+        'receptors': [
+            'kf_DAMGO', 'KD_DAMGO', 'kdeg_DAMGO',
+            'kf_Fentanyl', 'KD_Fentanyl', 'kdeg_Fentanyl',
+            'kf_5HT', 'KD_5HT', 'kdeg_5HT',
+        ],
+        'cAMPanalogs': [
+            'ki_Rp8_Br_cAMPS_pAB',
+            'ki_Rp8_pCPT_cAMPS_pAB',
+            'ki_Rp_cAMPS_pAB',
+            'ki_Sp8_Br_cAMPS_AM',
+            'xi_KD_Rp8_Br_cAMPS',
+            'xi_KD_Rp8_pCPT_cAMPS',
+            'xi_KD_Rp_cAMPS',
+            'xi_KD_Sp8_Br_cAMPS',
+            'xi_b_Rp8_Br_cAMPS',
+            'xi_b_Rp8_pCPT_cAMPS',
+            'xi_b_Rp_cAMPS',
+            'xi_b_Sp8_Br_cAMPS',
+        ],
+        'PKAandcAMP': ['KD_Fsk', 'KD_H89', 'kf_H89',
+                         'KD_IBMX', 'ki_IBMX',
+                         'KD_cAMP', 'kdeg_cAMP', 'kf_cAMP',
+                         'kdeg_cAMP_free', 'kf_Fsk', 'ks_AC_cAMP', 'xi_AC_cAMP_Fsk',
+                         'kf_RII_2__RII_C_2',
+                         'kf_RII_C_2__RII_2',
+                         'kf_RII_C_2__RIIp_C_2',
+                         'kf_RIIp_2__RII_2',
+                         'kf_RIIp_C_2__RII_C_2',
+                         'kf_RIIp_cAMP_C_2__RIIp_2',
+                         'xi_kf_RII_2__RII_C_2',
+                         'xi_kf_RII_C_2__RII_2',
+                         ],
+        'noise': [
+            'b_Calpha_global',
+            'b_pRII_global',
+            'rel_open',
+            'xi_rel_open',
+            's_Calpha_global',
+            's_pRII_JI09_150302_Drg345_343_CycNuc',
+            's_pRII_JI09_150330_Drg350_348_CycNuc',
+            's_pRII_JI09_150330_Drg353_351_CycNuc',
+            's_pRII_JI09_151102_Drg421_418_Age',
+            's_pRII_Western',
+            's_pRII_global',
+            'rho_Calpha_Microscopy',
+            'rho_pRII_Microscopy',
+            'rho_pRII_Western',
+            's_pRII_LK041_39_MOR_Kinetic_Fentanyl_Fsk',
+            's_pRII_LK023_21_MOR_Kinetik_DAMGO_Fsk',
+            's_pRII_LK15_150810_LK053_52_047_46_MOR_Kinetic_Fentanyl_5HT',
+            's_pRII_LK15_150727_LK051_48_MOR_Kinetic_10min_Fentanyl_Fsk',
+            's_pRII_LK020_18_LK014_12_MOR_Kinetik_DAMGO_5HT',
+            's_pRII_JI09_140331_Drg270_267_TiM',
+            'b_pRII_LK15_150727_LK051_48_MOR_Kinetic_10min_Fentanyl_Fsk'
+        ]
+    }
+
+    os.makedirs(figures_dir, exist_ok=True)
+
+    for pg in parameter_groups:
+        n_params = len(parameter_groups[pg])
+
+        if rotation == 'v':
+            fig, ax = plt.subplots(figsize=(12, 0.5*n_params + 2))
+            plt.subplots_adjust(left=0.6)
+        else:
+            fig, ax = plt.subplots(figsize=(0.5*n_params + 6, 12))
+            plt.subplots_adjust(bottom=0.6)
+
+
+        p_indices = [result.problem.x_names.index(pn) for pn in parameter_groups[pg]]
+        profile_cis(result, figures_dir=figures_dir, pf=pg,
+                    profile_indices=p_indices, rotation=rotation, ax=ax
+        )

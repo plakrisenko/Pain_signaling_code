@@ -26,7 +26,7 @@ from pypesto.store import OptimizationResultHDF5Reader, \
 from utils import (_model_import, _setup_amici, create_pypesto_problem, get_best_parameters,
                    read_optimization_results)
 from visualization import (plot_residuals, visualize_fit, visualize_optimization_result,
-                           visualize_profiles)
+                           visualize_profiles, visualize_profile_confidence_intervals)
 
 
 def sample_startpoints(amici_model, petab_problem, base_dir, results_dir,
@@ -358,7 +358,7 @@ if __name__ == "__main__":
             f"parameter_startpoints_{config['optimize']['n_optimizations']}.tsv"))
 
     results = read_optimization_results(os.path.join(results_dir, 'result.h5'),
-                                       os.path.join(results_dir, 'histories', 'hist_result.h5'),
+                                        os.path.join(results_dir, 'histories', 'hist_result.h5'),
                                        read_histories=False)
 
     get_best_parameters(results, n_par_vector=1, end_p=True,
@@ -377,3 +377,14 @@ if __name__ == "__main__":
                     result_path=os.path.join(results_dir, 'result.h5'),
                     tolerances=config['tolerances'],
                     optimize_config=config['optimize'])
+
+
+    pypesto_profile_reader = ProfileResultHDF5Reader(
+       os.path.join(results_dir, 'profile_results.h5'))
+    profile_read = pypesto_profile_reader.read()
+    results.profile_result = profile_read.profile_result
+
+    # Fig 4
+    visualize_profile_confidence_intervals(results,
+                                           os.path.join(figures_dir, 'parameter_uncertainty'),
+                                           rotation='v')
