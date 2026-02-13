@@ -1004,6 +1004,8 @@ if __name__ == "__main__":
     )
     model_petab_problem.measurement_df = measurement_df_smooth
 
+    visualize_ensemble_comparison(results_dir, figures_dir)
+
     # Fig 3 (from_hist=False) and Fig 5 (from_hist=True)
     # observables
     _, prediction = create_prediction(
