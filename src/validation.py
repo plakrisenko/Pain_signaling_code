@@ -710,3 +710,108 @@ if __name__ == "__main__":
     model_name = config["model_name"]
 
     simulate_and_visualize_exp2()
+
+    # validation of dataset 13 and 14 with scaling estimation
+    exp_with_scaling_estimate = True
+    if exp_with_scaling_estimate:
+        petab_dir = os.path.join(base_dir, "petab", "validation")
+        yaml_file = os.path.join(petab_dir, "PKAcycleMOR_simulation.yaml")
+        results_dir = os.path.join(base_dir, "results")
+        figures_dir = os.path.join(results_dir, "figures")
+
+        os.makedirs(figures_dir, exist_ok=True)
+
+        model, model_petab_problem = _model_import(
+            base_dir=base_dir,
+            yaml_file=yaml_file,
+            model_name=model_name,
+            force_compile=True
+        )
+
+        measurement_df = petab.v1.get_measurement_df(
+            os.path.join(petab_dir, 'measurementData_PKAcycleMOR_only_validation.tsv'))
+
+        result = read_optimization_results(
+            os.path.join(results_dir, 'result.h5'),
+            os.path.join(results_dir, "histories", 'hist_result.h5'),
+            read_histories=True)
+
+        alpha = 0.01
+        th = stats.chi2.ppf(1 - alpha, 1) / 2
+
+        from_hist = True
+        if from_hist:
+            my_ensemble = Ensemble.from_optimization_history(result,
+                                                             max_size=np.inf,
+                                                             rel_cutoff=th
+                                                             )
+        else:
+            my_ensemble = Ensemble.from_optimization_endpoints(result,
+                                                               max_size=np.inf,
+                                                               rel_cutoff=th
+                                                               )
+
+        # for validation simulations where scaling wasn't estimated during parameter estimation
+        excluded_params = ['s_pRII_JI09_150302_Drg345_343_CycNuc',
+                           's_pRII_JI09_150330_Drg353_351_CycNuc',
+                           's_pRII_JI09_151102_Drg421_418_Age',
+                           's_pRII_LK041_39_MOR_Kinetic_Fentanyl_Fsk',
+                           's_pRII_LK023_21_MOR_Kinetik_DAMGO_Fsk',
+                           's_pRII_LK15_150810_LK053_52_047_46_MOR_Kinetic_Fentanyl_5HT',
+                           's_pRII_LK15_150727_LK051_48_MOR_Kinetic_10min_Fentanyl_Fsk',
+                           's_pRII_LK020_18_LK014_12_MOR_Kinetik_DAMGO_5HT',
+                           's_pRII_JI09_140331_Drg270_267_TiM']
+
+        # remove parameters
+        x_names_free = np.asarray(result.problem.x_names)[result.problem.x_free_indices]
+        param_indices_remove = [idx for idx in range(len(x_names_free)) if
+                                x_names_free[idx] in excluded_params]
+        param_indices_keep = [idx for idx in range(len(x_names_free)) if
+                              x_names_free[idx] not in excluded_params]
+        my_ensemble.x_vectors = np.delete(my_ensemble.x_vectors, param_indices_remove, axis=0)
+
+        my_ensemble.lower_bound = np.asarray(my_ensemble.lower_bound)[param_indices_keep]
+        my_ensemble.upper_bound = np.asarray(my_ensemble.upper_bound)[param_indices_keep]
+        my_ensemble.x_names = np.asarray(my_ensemble.x_names)[param_indices_keep]
+        my_ensemble.n_x = len(param_indices_keep)
+
+        # add parameters
+        my_ensemble.x_vectors = np.insert(my_ensemble.x_vectors, [66, 66],
+                                          [0] * my_ensemble.n_vectors,
+                                          axis=0)
+
+        my_ensemble.x_names = np.insert(my_ensemble.x_names, len(my_ensemble.x_names) - 1,
+                                        's_pRII_JI09_160112_Drg443_442_DelayDoseResponse')
+        my_ensemble.x_names = np.insert(my_ensemble.x_names, len(my_ensemble.x_names) - 1,
+                                        's_pRII_LK038_35_MOR_DoseResponse_FentanylDAMGO_pH')
+
+        my_ensemble.lower_bound = np.insert(my_ensemble.lower_bound,
+                                            len(my_ensemble.lower_bound) - 1, -3)
+        my_ensemble.lower_bound = np.insert(my_ensemble.lower_bound,
+                                            len(my_ensemble.lower_bound) - 1, -3)
+
+        my_ensemble.upper_bound = np.insert(my_ensemble.upper_bound,
+                                            len(my_ensemble.upper_bound) - 1, 3)
+        my_ensemble.upper_bound = np.insert(my_ensemble.upper_bound,
+                                            len(my_ensemble.upper_bound) - 1, 3)
+
+        my_ensemble.n_x += 2
+
+        pypesto_problem, startpoint_method, importer = create_pypesto_problem(
+            base_dir, model, model_petab_problem, config['tolerances'])
+
+        pypesto_problem.objective._objectives[0].update_from_problem(
+            dim_full=pypesto_problem.dim_full,
+            x_free_indices=pypesto_problem.x_free_indices,
+            x_fixed_indices=pypesto_problem.x_fixed_indices,
+            x_fixed_vals=pypesto_problem.x_fixed_vals,
+        )
+
+        custom_simulate_and_visualize_ensemble(my_ensemble,
+                                               pypesto_problem,
+                                               model_petab_problem,
+                                               measurement_df,
+                                               figures_dir=os.path.join(figures_dir, 'validation'),
+                                               plot_measurements=True,
+                                               plot_states=False,
+                                               savefig=True)
