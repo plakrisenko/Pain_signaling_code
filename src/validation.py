@@ -715,7 +715,7 @@ if __name__ == "__main__":
     exp_with_scaling_estimate = True
     if exp_with_scaling_estimate:
         petab_dir = os.path.join(base_dir, "petab", "validation")
-        yaml_file = os.path.join(petab_dir, "PKAcycleMOR_simulation.yaml")
+        yaml_file = os.path.join(petab_dir, "PKAcycleMOR_validation.yaml")
         results_dir = os.path.join(base_dir, "results")
         figures_dir = os.path.join(results_dir, "figures")
 
