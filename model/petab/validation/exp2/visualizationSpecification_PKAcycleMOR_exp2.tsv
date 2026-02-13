@@ -1,0 +1,3 @@
+plotId	plotName	plotTypeSimulation	plotTypeData	datasetId	xValues	xOffset	xLabel	yValues	yOffset	yLabel	legendEntry	xScale	yScale
+plot2	JI09_150330_Drg350_348_CycNuc	LinePlot	MeanAndSD	JI09_150330_Drg350_348_CycNuc__5HT1	time	0	Time [min]	pRII_Microscopy	0	pRII_Microscopy	5-HT(1)	lin	lin
+plot2	JI09_150330_Drg350_348_CycNuc	LinePlot	MeanAndSD	JI09_150330_Drg350_348_CycNuc__IBMX100_and_5HT1	time	0	Time [min]	pRII_Microscopy	0	pRII_Microscopy	IBMX(100)/5-HT(1)	lin	lin
