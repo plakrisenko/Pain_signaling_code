@@ -1,0 +1,67 @@
+parameterId	parameterName	parameterScale	lowerBound	upperBound	nominalValue	estimate	initializationPriorType	initializationPriorParameters	objectivePriorType	objectivePriorParameters
+KD_Fsk	KD_{Fsk}	log10	0.00001	1000	18.297535417936	1	parameterScaleNormal	1.15;0.231	parameterScaleNormal	0.845098040014257;0.2
+KD_H89	KD_{H89}	log10	0.00001	1000	0.0479866700399871	1	parameterScaleNormal	-1.32;0.264	parameterScaleNormal	-1.318758762624413;0.2
+KD_IBMX	KD_{IBMX}	log10	0.00001	1000	12.4629666348739	1	parameterScaleNormal	1.08;0.216	parameterScaleNormal	1.0;0.2
+KD_cAMP	KD_{cAMP}	log10	0.00001	1000	2.89846244256985	1	parameterScaleNormal	0.45;0.091	parameterScaleNormal	0.462397997898956;0.2
+b_Calpha_global	b_{Calpha,global}	log10	0.001	1000	100.054239008724	1	parameterScaleNormal	2.01;0.401	parameterScaleNormal	2;0.1
+b_pRII_global	b_{pRII,global}	log10	0.001	1000	316.515004568187	1	parameterScaleNormal	2.0;0.4	parameterScaleNormal	2;0.1
+kdeg_cAMP	kdeg_{cAMP}	log10	0.00001	1000	1.41481547712019E-05	1	parameterScaleNormal	-5.0;1.0		
+kdeg_cAMP_free	kdeg_{cAMP,free}	log10	0.00001	1000	2.82895826842839	1	parameterScaleNormal	0.87;0.174		
+kf_Fsk	kf_{Fsk}	log10	0.00001	10000	0.083974095434941	1	parameterScaleNormal	3.0;0.6		
+kf_H89	kf_{H89}	log10	0.00001	1000	0.000806377221541545	1	parameterScaleNormal	-3.13;0.626		
+kf_RII_2__RII_C_2	kf_{RII_2,RII_C_2}	log10	0.00001	100000	0.320697399159019	1	parameterScaleNormal	0.1;0.02		
+kf_RII_C_2__RII_2	kf_{RII_C_2,RII_2}	log10	0.00001	1000	0.00659629454686169	1	parameterScaleNormal	-1.73;0.345		
+kf_RII_C_2__RIIp_C_2	kf_{RII_C_2,RIIp_C_2}	log10	0.00001	1000	0.00670956470946285	1	parameterScaleNormal	-1.64;0.329		
+kf_RIIp_2__RII_2	kf_{RIIp_2,RII_2}	log10	0.00001	1000	0.0203731144217432	1	parameterScaleNormal	-1.49;0.298		
+kf_RIIp_C_2__RII_C_2	kf_{RIIp_C_2,RII_C_2}	log10	0.00001	1000	0.0119648170801696	1	parameterScaleNormal	-1.59;0.318		
+kf_RIIp_cAMP_C_2__RIIp_2	kf_{RIIp_cAMP_C_2,RIIp_2}	log10	0.00001	1000	0.0344964913060792	1	parameterScaleNormal	-0.98;0.196		
+kf_cAMP	kf_{cAMP}	log10	0.00001	1000	0.846429564857323	1	parameterScaleNormal	-0.3;0.06		
+ki_IBMX	ki_{IBMX}	log10	0.00001	100000	3635.82211330264	1	parameterScaleNormal	3.0;0.6		
+ki_Rp8_Br_cAMPS_pAB	ki_{Rp8,Br,cAMPS,pAB}	log10	0.00001	1000	4.45642830795671	1	parameterScaleNormal	0.81;0.162		
+ki_Rp8_pCPT_cAMPS_pAB	ki_{Rp8,pCPT,cAMPS,pAB}	log10	0.00001	1000	5.50199791967697	1	parameterScaleNormal	0.97;0.195		
+ki_Rp_cAMPS_pAB	ki_{Rp,cAMPS,pAB}	log10	0.00001	1000	0.0177866831565963	1	parameterScaleNormal	-1.79;0.357		
+ki_Sp8_Br_cAMPS_AM	ki_{Sp8,Br,cAMPS,AM}	log10	0.00001	1000	0.0725004803265663	1	parameterScaleNormal	-0.88;0.176		
+ks_AC_cAMP	ks_{AC,cAMP}	log10	0.00001	1000	0.12628399932842	1	parameterScaleNormal	-0.37;0.075		
+rel_open	rel_{open}	log10	0.00001	1	0.203653111865597	1	parameterScaleNormal	-0.63;0.127		
+s_Calpha_global	s_{Calpha,global}	log10	1000	3162.27766016838	2119.32058119411	1	parameterScaleNormal	3.25;0.649		
+s_pRII_Western	s_{pRII,Western}	log10	0.1	100000	1.68187836585475	1	parameterScaleNormal	0.06;0.012		
+s_pRII_global	s_{pRII,global}	log10	1000	3162.27766016838	2565.26380417289	1	parameterScaleNormal	3.34;0.669		
+rho_Calpha_Microscopy	\rho_{Calpha,Microscopy}	log10	0.00001	1000	0.0401213422887679	1	parameterScaleNormal	-1.3;0.261		
+rho_pRII_Microscopy	\rho_{pRII,Microscopy}	log10	0.00001	1000	0.0321381950880901	1	parameterScaleNormal	-1.39;0.278		
+rho_pRII_Western	\rho_{pRII,Western}	log10	0.00001	1000	0.0679447227873077	1	parameterScaleNormal	-1.0;0.201		
+xi_AC_cAMP_Fsk	\xi_{AC_{cAMP,Fsk}	log10	0.00001	100000	1184.98331643644	1	parameterScaleNormal	2.81;0.562		
+xi_KD_Rp8_Br_cAMPS	\xi_{KD,Rp8,Br,cAMPS}	log10	0.00001	100000	0.0996332290165796	1	parameterScaleNormal	-1.4;0.28	parameterScaleNormal	0;3
+xi_KD_Rp8_pCPT_cAMPS	\xi_{KD,Rp8,pCPT,cAMPS}	log10	0.00001	100000	0.332547700627776	1	parameterScaleNormal	-0.71;0.142	parameterScaleNormal	0;3
+xi_KD_Rp_cAMPS	\xi_{KD,Rp,cAMPS}	log10	0.00001	100000	0.193650567197912	1	parameterScaleNormal	-0.79;0.158	parameterScaleNormal	0;3
+xi_KD_Sp8_Br_cAMPS	\xi_{KD,Sp8,Br,cAMPS}	log10	0.00001	100000	0.166813321703563	1	parameterScaleNormal	-0.65;0.13	parameterScaleNormal	0;3
+xi_b_Rp8_Br_cAMPS	\xi_{b,Rp8,Br,cAMPS}	log10	0.00001	100000	0.0199656372950011	1	parameterScaleNormal	-1.39;0.278	parameterScaleNormal	0;3
+xi_b_Rp8_pCPT_cAMPS	\xi_{b,Rp8,pCPT,cAMPS}	log10	0.00001	100000	0.0140642299705524	1	parameterScaleNormal	-1.57;0.315	parameterScaleNormal	0;3
+xi_b_Rp_cAMPS	\xi_{b,Rp,cAMPS}	log10	0.00001	100000	0.353008149450576	1	parameterScaleNormal	-0.22;0.044	parameterScaleNormal	0;3
+xi_b_Sp8_Br_cAMPS	\xi_{b,Sp8,Br,cAMPS}	log10	0.00001	100000	12.4378001708656	1	parameterScaleNormal	1.33;0.267	parameterScaleNormal	0;3
+xi_kf_RII_2__RII_C_2	\xi_{kf_RII_2,RII_C_2}	log10	0.00001	1	0.018046226312628	1	parameterScaleNormal	-1.72;0.345	parameterScaleNormal	-1.742435698117109;0.1
+xi_kf_RII_C_2__RII_2	\xi_{kf_RII_C_2,RII_2}	log10	0.00001	100000	0.83124637249909	1	parameterScaleNormal	-0.09;0.018	parameterScaleNormal	-0.062147906748844;0.1
+xi_rel_open	\xi_{rel,open}	log10	0.00001	1	0.912140378704282	1	parameterScaleNormal	-0.13;0.025		
+kf_DAMGO	kf_DAMGO	log10	0.00001	100000	7.58978606393102	1				
+KD_DAMGO	KD_DAMGO	log10	0.00001	1000	0.927065363277799	1				
+kf_Fentanyl	kf_Fentanyl	log10	0.00001	100000	2.55006088409356	1				
+KD_Fentanyl	KD_Fentanyl	log10	0.00001	1000	0.0446060442571065	1				
+kf_5HT	kf_5HT	log10	0.00001	100000	99999.9999999949	1				
+KD_5HT	KD_5HT	log10	0.00001	1000	0.0111394962473081	1				
+kdeg_DAMGO	kdeg_DAMGO	log10	0.00001	1000	0.0337465977670274	1				
+kdeg_Fentanyl	kdeg_Fentanyl	log10	0.00001	1000	0.0107448998080837	1				
+kdeg_5HT	kdeg_5HT	log10	0.00001	1000	0.0176880330535427	1				
+kf_alphaI_GDP__betaI_gammaI____alphaI_betaI_gammaI	kf_alphaI_GDP__betaI_gammaI____alphaI_betaI_gammaI	log10	0.00001	100000	99999.9999999947	1				
+kf_alphaS_GDP__betaS_gammaS____alphaS_betaS_gammaS	kf_alphaS_GDP__betaS_gammaS____alphaS_betaS_gammaS	log10	0.00001	1000	0.0123377387200564	1				
+kf_alphaS_betaS_gammaS	kf_alphaS_betaS_gammaS	log10	0.00001	1000	0.000804255369782896	1				
+xi_alphaS_betaS_gammaS__fiveHT4_5HT	xi_alphaS_betaS_gammaS__fiveHT4_5HT	log10	0.00001	100000	192.00282203621	1				
+kf_alphaI_betaI_gammaI	kf_alphaI_betaI_gammaI	log10	0.00001	1000	0.0358370726891974	1				
+xi_alphaI_betaI_gammaI__MOR_DAMGO	xi_alphaI_betaI_gammaI__MOR_DAMGO	log10	0.00001	10000	7985.3417384379	1				
+xi_alphaI_betaI_gammaI__MOR_Fentanyl	xi_alphaI_betaI_gammaI__MOR_Fentanyl	log10	0.00001	10000	7299.25166413426	1				
+kf_alphaS_GTP__alphaS_GDP	kf_alphaS_GTP__alphaS_GDP	log10	0.00001	10000	35.9386848613971	1				
+kf_alphaI_GTP__alphaI_GDP	kf_alphaI_GTP__alphaI_GDP	log10	0.00001	100000	99999.6558614698	1				
+kf_AC_alphaI_GTP	kf_AC_alphaI_GTP	log10	0.00001	100000	1.04884117821156	1				
+KD_AC_alphaI_GTP	KD_AC_alphaI_GTP	log10	0.00001	100000	6803.46404303783	1				
+kf_AC_alphaS_GTP	kf_AC_alphaS_GTP	log10	0.00001	100000	87172.8437691597	1				
+KD_AC_alphaS_GTP	KD_AC_alphaS_GTP	log10	0.00001	10000	0.510594203678212	1				
+xi_AC_cAMP_alphaS_GTP	xi_AC_cAMP_alphaS_GTP	log10	0.00001	100000	99998.640647816	1				
+s_pRII_JI09_140331_Drg270_267_TiM	s_pRII_JI09_140331_Drg270_267_TiM	log10	0.001	1000	1	1			parameterScaleNormal	0;0.1
