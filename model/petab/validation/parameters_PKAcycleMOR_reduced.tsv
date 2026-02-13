@@ -25,7 +25,7 @@ ks_AC_cAMP	ks_{AC,cAMP}	log10	0.00001	1000	0.12628399932842	1	parameterScaleNorm
 rel_open	rel_{open}	log10	0.00001	1	0.203653111865597	1	parameterScaleNormal	-0.63;0.127		
 s_Calpha_JI09_160201_Drg453_452_CycNuc	s_{Calpha,JI09,160201,Drg453,452,CycNuc}	log10	0.00001	1000	1	0				
 s_Calpha_global	s_{Calpha,global}	log10	1000	3162.27766016838	2119.32058119411	1	parameterScaleNormal	3.25;0.649		
-s_pRII_JI09_150330_Drg350_348_CycNuc	s_{pRII,JI09,150330,Drg350,348,CycNuc}	log10	0.001	1000	1.1748593691276	1	parameterScaleNormal	-0.04;0.009	parameterScaleNormal	0;0.1
+s_pRII_JI09_150330_Drg350_348_CycNuc	s_{pRII,JI09,150330,Drg350,348,CycNuc}	log10	0.001	1000	0.994077857945268	1	parameterScaleNormal	-0.04;0.009	parameterScaleNormal	0;0.1
 s_pRII_Western	s_{pRII,Western}	log10	0.1	100000	1.68187836585475	1	parameterScaleNormal	0.06;0.012		
 s_pRII_global	s_{pRII,global}	log10	1000	3162.27766016838	2565.26380417289	1	parameterScaleNormal	3.34;0.669		
 rho_Calpha_Microscopy	\rho_{Calpha,Microscopy}	log10	0.00001	1000	0.0401213422887679	1	parameterScaleNormal	-1.3;0.261		
