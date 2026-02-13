@@ -1,0 +1,19 @@
+plotId	plotName	plotTypeSimulation	plotTypeData	datasetId	xValues	xOffset	xLabel	yValues	yOffset	yLabel	legendEntry	xScale	yScale
+plot1	JI09_160112_Drg443_442_DelayDoseResponse	LinePlot	MeanAndSD	JI09_160112_Drg443_442_DelayDoseResponse__Ctrl_and_Ctrl	time	0	Time [min]	pRII_Microscopy	0	pRII_Microscopy [au]	Ctrl/Ctrl	lin	lin
+plot1	JI09_160112_Drg443_442_DelayDoseResponse	LinePlot	MeanAndSD	JI09_160112_Drg443_442_DelayDoseResponse__Fent_and_Ctrl	time	0	Time [min]	pRII_Microscopy	0	pRII_Microscopy [au]	fentanyl(2)/Ctrl	lin	lin
+plot1	JI09_160112_Drg443_442_DelayDoseResponse	LinePlot	MeanAndSD	JI09_160112_Drg443_442_DelayDoseResponse__Ctrl_and_5HT	time	0	Time [min]	pRII_Microscopy	0	pRII_Microscopy [au]	Ctrl/5-HT(0.2)	lin	lin
+plot1	JI09_160112_Drg443_442_DelayDoseResponse	LinePlot	MeanAndSD	JI09_160112_Drg443_442_DelayDoseResponse__Ctrl_and_Fsk	time	0	Time [min]	pRII_Microscopy	0	pRII_Microscopy [au]	Ctrl/Fsk(3)	lin	lin
+plot1	JI09_160112_Drg443_442_DelayDoseResponse	LinePlot	MeanAndSD	JI09_160112_Drg443_442_DelayDoseResponse__Fent_and_5HT	time	0	Time [min]	pRII_Microscopy	0	pRII_Microscopy [au]	fentanyl(2)/5-HT(0.2)	lin	lin
+plot1	JI09_160112_Drg443_442_DelayDoseResponse	LinePlot	MeanAndSD	JI09_160112_Drg443_442_DelayDoseResponse__Fent_and_Fsk	time	0	Time [min]	pRII_Microscopy	0	pRII_Microscopy [au]	fentanyl(2)/Fsk(3)	lin	lin
+plot2	JI09_150330_Drg350_348_CycNuc	LinePlot	MeanAndSD	JI09_150330_Drg350_348_CycNuc__IBMX100_and_5HT1	time	0	Time [min]	pRII_Microscopy	0	pRII_Microscopy [au]	IBMX(100)/5-HT(1)	lin	lin
+plot2	JI09_150330_Drg350_348_CycNuc	LinePlot	MeanAndSD	JI09_150330_Drg350_348_CycNuc__5HT1	time	0	Time [min]	pRII_Microscopy	0	pRII_Microscopy [au]	5-HT(1)	lin	lin
+plot3	JI09_160201_Drg453_452_CycNuc	LinePlot	MeanAndSD	JI09_160201_Drg453_452_CycNuc__5HT	time	0	Time [min]	Calpha_Microscopy	0	Calpha_Microscopy [au]	5-HT(0.2)	lin	lin
+plot3	JI09_160201_Drg453_452_CycNuc	LinePlot	MeanAndSD	JI09_160201_Drg453_452_CycNuc__ctrl	time	0	Time [min]	Calpha_Microscopy	0	Calpha_Microscopy [au]	Ctrl	lin	lin
+plot3	JI09_160201_Drg453_452_CycNuc	LinePlot	MeanAndSD	JI09_160201_Drg453_452_CycNuc__Fsk	time	0	Time [min]	Calpha_Microscopy	0	Calpha_Microscopy [au]	Fsk(10)	lin	lin
+plot3	JI09_160201_Drg453_452_CycNuc	LinePlot	MeanAndSD	JI09_160201_Drg453_452_CycNuc__Sp8_Br_cAMPS_AM	time	0	Time [min]	Calpha_Microscopy	0	Calpha_Microscopy [au]	Sp8-Br-cAMPS-AM(10)	lin	lin
+plot4	LK038_35_MOR_DoseResponse_FentanylDAMGO_pH	LinePlot	MeanAndSD	LK038_35_MOR_DoseResponse_FentanylDAMGO_pH___ctrl	fourABnOH_level	0	Concentration [$\mu$M]	pRII_Microscopy	0	pRII_Microscopy [au]	Ctrl	log10	lin
+plot4	LK038_35_MOR_DoseResponse_FentanylDAMGO_pH	LinePlot	MeanAndSD	LK038_35_MOR_DoseResponse_FentanylDAMGO_pH___DAMGO	DAMGO_level	0	Concentration [$\mu$M]	pRII_Microscopy	0	pRII_Microscopy [au]	DAMGO	log10	lin
+plot4	LK038_35_MOR_DoseResponse_FentanylDAMGO_pH	LinePlot	MeanAndSD	LK038_35_MOR_DoseResponse_FentanylDAMGO_pH___Fentanyl	Fentanyl_level	0	Concentration [$\mu$M]	pRII_Microscopy	0	pRII_Microscopy [au]	fentanyl	log10	lin
+plot5	JI09_160112_Drg443_442_DelayDoseResponse	BarPlot	MeanAndSD	JI09_160112_Drg443_442_DelayDoseResponse__Ctrl_and_Ctrl	condition	0	Condition	pRII_Microscopy	0	pRII_Microscopy [au]	Ctrl/Ctrl	lin	lin
+plot5	JI09_160112_Drg443_442_DelayDoseResponse	BarPlot	MeanAndSD	JI09_160112_Drg443_442_DelayDoseResponse__Fent_and_Ctrl	condition	0	Condition	pRII_Microscopy	0	pRII_Microscopy [au]	fentanyl(2)/Ctrl	lin	lin
+plot5	JI09_160112_Drg443_442_DelayDoseResponse	BarPlot	MeanAndSD	JI09_160112_Drg443_442_DelayDoseResponse__Ctrl_and_5HT	condition	0	Condition	pRII_Microscopy	0	pRII_Microscopy [au]	Ctrl/5-HT(0.2)	lin	lin
