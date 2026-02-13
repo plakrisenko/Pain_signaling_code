@@ -161,3 +161,29 @@ if __name__ == "__main__":
         outfig = os.path.join(results_dir, 'fluxes', f'start{i}')
         os.makedirs(outfig, exist_ok=True)
         write_fluxes(result, model, outfig)
+
+    for condition, _, title in [
+        ('model1_data124', 'LK041_39_MOR_Kinetic_Fentanyl_Fsk___ctrl', ''),
+        ('model1_data126', 'LK041_39_MOR_Kinetic_Fentanyl_Fsk___Fsk', ''),
+        ('model1_data129', 'LK041_39_MOR_Kinetic_Fentanyl_Fsk___Fsk_and_Fentanyl10',
+         'Fentanyl (10 $\mu$M)'),
+        ('model1_data128', 'LK041_39_MOR_Kinetic_Fentanyl_Fsk___Fsk_and_Fentanyl1',
+         'Fentanyl (1 $\mu$M)'),
+         ('model1_data127', 'LK041_39_MOR_Kinetic_Fentanyl_Fsk___Fsk_and_Fentanyl01',
+          'Fentanyl (0.1 $\mu$M)')]:
+        ids_set = list(range(5))
+        os.makedirs(os.path.join(figures_dir, 'fluxes'), exist_ok=True)
+        visualize_Gactivity_flux(
+            [os.path.join(results_dir, 'fluxes', f'start{i}', f'{condition}+model1_data49.tsv') for
+             i in ids_set],
+            [
+                # ('flux_alphaI_betaI_gammaI____alphaI_GTP___betaI_gammaI__2', 'DAMGO'),
+                # ('flux_alphaI_betaI_gammaI____alphaI_GTP___betaI_gammaI__4', 'DAMGO pRII'),
+                ('flux_alphaI_betaI_gammaI____alphaI_GTP___betaI_gammaI__3', 'Fentanyl'),
+                ('flux_alphaI_betaI_gammaI____alphaI_GTP___betaI_gammaI__5', 'Fentanyl + pRII'),
+                ('flux_alphaI_betaI_gammaI____alphaI_GTP___betaI_gammaI', 'basal'),
+            ],
+            outpath=os.path.join(figures_dir, 'fluxes',
+                                 f'{condition}_MOR_feedback_percent.svg'),
+            title=title
+        )
