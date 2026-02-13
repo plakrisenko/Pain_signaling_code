@@ -2,13 +2,17 @@ import copy
 import os
 import yaml
 from functools import partial
+from typing import Optional
 
 import pypesto.ensemble
+import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 import petab
 import scipy.stats as stats
 import pypesto
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Rectangle
 from pypesto.ensemble import Ensemble
 from pypesto.C import AMICI_T, AMICI_X, AMICI_STATUS
 
@@ -823,6 +827,156 @@ def visualize_ensemble_states(
         f"{e_id}__state_{state_name}_{len(ensemble_prediction.prediction_results)}.svg"
     ))
     plt.close(fig)
+
+
+def ensemble_parameters_plot(
+    ensemble: Ensemble,
+    ax: Optional[plt.Axes] = None,
+    size: Optional[tuple[float, float]] = (20, 13),
+    parameter_ids: Optional[list] = None,
+) -> plt.Axes:
+    """Plot ensemble parameter uncertainty for selected parameters.
+
+    The plot shows the ensemble samples for each parameter (one horizontal
+    row per parameter). Each ensemble member is plotted as a marker at the
+    parameter value; the first ensemble vector (index 0) is highlighted in
+    red. Vertical short lines indicate the per-parameter lower and upper
+    bounds stored in the `Ensemble` object.
+
+    Args:
+        ensemble: A `pypesto.ensemble.Ensemble` containing `x_vectors`,
+            `lower_bound`, `upper_bound` and `x_names`.
+        ax: Optional Matplotlib Axes to draw into. If ``None`` a new figure
+            and axes are created using `size`.
+        size: Figure size used when creating a new figure (width, height).
+        parameter_ids: Optional list of parameter indices (ints) or names
+            (strings) to plot. If ``None`` all parameters in the ensemble
+            are plotted.
+
+    Returns:
+        The Matplotlib Axes containing the plot.
+    """
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=size)
+
+    plt.rcParams.update({'font.size': 24,
+                         'figure.titlesize': 'x-large',
+                         'xtick.labelsize': 24,
+                         'ytick.labelsize': 28,
+                         'lines.markersize': 12,
+                         'lines.linewidth': 3,
+                         'legend.fontsize': 'x-small'
+                         })
+
+    if parameter_ids:
+        x_vectors = ensemble.x_vectors[parameter_ids]
+        n_vectors = len(parameter_ids)
+    else:
+        parameter_ids = np.arange(ensemble.n_x)
+        x_vectors = ensemble.x_vectors
+        n_vectors = ensemble.n_x
+
+    lower_bound = ensemble.lower_bound[parameter_ids]
+    upper_bound = ensemble.upper_bound[parameter_ids]
+
+    x = -0.3
+    x_b = -0.4
+    w = 0.6
+    rectangles = []
+    boundaries = []
+
+    for i, par_values in enumerate(x_vectors):
+        h = np.max(par_values)-np.min(par_values)
+        rectangles.append(
+            Rectangle((np.min(par_values), x), h, w))
+        boundaries.append(Rectangle((-5.2, x_b), lower_bound[i]+5.2, 1))
+        boundaries.append(Rectangle((upper_bound[i], x_b), 5.2-upper_bound[i], 1))
+
+        x += w+0.4
+        x_b += 1
+
+    ax.add_collection(PatchCollection(rectangles, facecolors=[1, 1, 1, 1], edgecolors="dimgrey"))
+    ax.add_collection(PatchCollection(boundaries, facecolors=[0.8,0.8,0.8,0.5], edgecolors=None))
+
+    ax.set_xlim(-5.2,5.2)
+
+    cmap = matplotlib.colormaps['Greys']
+    colors2 = np.flip(cmap(np.linspace(0.3, 0.8, (ensemble.n_vectors-1))), axis=0)
+    colors2 = np.insert(colors2, 0, [1., 0., 0., 1.], axis=0)
+
+    for idx, v in enumerate(x_vectors):
+        ax.scatter(x=v, y=[idx]*ensemble.n_vectors, s=40, color=colors2, alpha=0.8, zorder=3)
+    ax.scatter(x_vectors[:, 0], np.arange(n_vectors), s=40, color=[1., 0., 0., 1.], zorder=3)
+
+    t = matplotlib.markers.MarkerStyle(marker='|')
+    t._transform = t.get_transform().rotate_deg(45)
+
+    for i in np.arange(n_vectors):
+        ax.plot([ensemble.lower_bound[parameter_ids][i]]*2, [i-0.4, i+0.4], color='grey')
+        ax.plot([ensemble.upper_bound[parameter_ids][i]]*2, [i-0.4, i+0.4], color='grey')
+
+    plt.xticks(fontsize=20)
+
+    def latex_names(x):
+        x = x.replace('alpha', '$\\alpha$')
+        x = x.replace('beta', '$\\beta$')
+        x = x.replace('gamma', '$\\gamma$')
+        return x
+
+    yticks = [latex_names(np.asarray(ensemble.x_names)[i]) for i in parameter_ids]
+    plt.yticks(np.arange(n_vectors), yticks, fontsize=25)
+    plt.tight_layout()
+
+    return ax
+
+
+def visualize_ensemble_comparison(results_folder, figures_dir):
+    result = read_optimization_results(
+        os.path.join(results_folder, "result.h5"),
+        os.path.join(results_folder, "histories", "hist_result_100.h5"),
+        read_histories=True,
+    )
+
+    alpha = 0.01
+    th = stats.chi2.ppf(1 - alpha, 1) / 2
+
+    my_ensemble = Ensemble.from_optimization_endpoints(result,
+                                                       max_size=5,
+                                                       rel_cutoff=th
+                                                    )
+    my_ensemble_hist = Ensemble.from_optimization_history(result,
+                                                          max_size=5,
+                                                          rel_cutoff=th)
+
+    for ensemble, pf in zip([my_ensemble, my_ensemble_hist], ['endpoints', 'history']):
+        scaling_p = []
+        model_p = []
+        scaling_p_ids = []
+        model_p_ids = []
+        for idx, x_name in enumerate(ensemble.x_names):
+            l = min(ensemble.x_vectors[idx]) - ensemble.lower_bound[idx]
+            u = ensemble.upper_bound[idx] - max(ensemble.x_vectors[idx])
+            if x_name.startswith('s_') or x_name.startswith('b_') or x_name.startswith(
+                    'rho_') or 'rel_open' in x_name:
+                scaling_p.append(x_name)
+                scaling_p_ids.append(idx)
+            else:
+                model_p.append(x_name)
+                model_p_ids.append(idx)
+
+        ax = ensemble_parameters_plot(
+           ensemble, parameter_ids=model_p_ids, size=(15, 20))
+        plt.tight_layout()
+        for ext in ['png', 'svg']:
+           plt.savefig(os.path.join(figures_dir, 'parameter_uncertainty',
+                                    f'ens_parameters_plot_99_modelparams_opt_{pf}.{ext}'))
+
+        ax = ensemble_parameters_plot(ensemble, parameter_ids=scaling_p_ids, size=(20, 20))
+        plt.tight_layout()
+        for ext in ['png', 'svg']:
+            plt.savefig(os.path.join(figures_dir, 'parameter_uncertainty',
+                                     f'ens_parameters_plot_99_obsparams_opt_{pf}.{ext}'))
 
 
 if __name__ == "__main__":
