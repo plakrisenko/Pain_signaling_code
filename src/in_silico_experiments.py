@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     petab_dir = os.path.join(base_dir, "petab", "in_silico_exp")
     yaml_file = os.path.join(petab_dir, config["petab_model_yaml"])
-    results_dir = os.path.join(base_dir, "results_full")
+    results_dir = os.path.join(base_dir, "results")
     figures_dir = os.path.join(results_dir, "figures")
 
     os.makedirs(figures_dir, exist_ok=True)

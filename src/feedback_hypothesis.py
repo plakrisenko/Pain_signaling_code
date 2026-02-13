@@ -1,10 +1,91 @@
 import os
 import yaml
+from typing import Optional
 
+import amici
+import numpy as np
+import pandas as pd
+import petab
+import matplotlib.pyplot as plt
 from shutil import copy
 
-from utils import (_model_import, read_optimization_results)
+from utils import (_model_import, _setup_amici, read_optimization_results)
 from optimization import optimize, get_best_parameters, simulate_and_visualize
+
+
+def simulate_states_petab(amici_model,
+                          petab_problem: petab.Problem,
+                          tolerances: dict,
+                          parameters_path: Optional[str] = None,
+                          parameters_idx: int = 0):
+
+    # Create solver instance
+    amici_model, solver = _setup_amici(amici_model, tolerances)
+
+    parameter_vector = pd.read_csv(parameters_path, sep='\t').values[parameters_idx]
+    parameters = dict(zip(petab_problem.x_ids, parameter_vector))
+
+    result = amici.petab.simulate_petab(
+        petab_problem, amici_model, solver,
+        problem_parameters=parameters,
+        scaled_parameters=True
+    )
+
+    return result, amici_model
+
+
+def write_fluxes(result, amici_model, out_folder):
+    for rdata in result['rdatas']:
+        df = pd.DataFrame(data=np.insert(rdata['w'], 0, rdata['ts'], axis=1),
+                          columns=['t'] + list(amici_model.getExpressionIds()))
+        df.to_csv(os.path.join(out_folder, f'{rdata.id}.tsv'), sep='\t', index=False)
+
+
+def visualize_Gactivity_flux(condition_fluxes_list, fluxes_to_plot, outpath, title: str = ''):
+    # condition_fluxes_list: List of paths to multiple condition_fluxes files
+    # fluxes_to_plot: List of tuples (flux column, legend)
+
+    plt.rcParams.update({'font.size': 26,
+                         'figure.titlesize': 'x-large',
+                         'xtick.labelsize': 24,
+                         'ytick.labelsize': 24,
+                         'lines.markersize': 12,
+                         'lines.linewidth': 4,
+                         'legend.fontsize': 'small'
+                         })
+    flux_data = []
+    for condition_fluxes in condition_fluxes_list:
+        fluxes = pd.read_csv(condition_fluxes, sep='\t')
+        flux_data.append(fluxes)
+
+    flux_concat = pd.concat(flux_data, axis=0, keys=range(len(flux_data)))
+    fig, axes = plt.subplots(figsize=(8.5, 6.8))
+
+    g_i_activation_fluxes = ['flux_alphaI_betaI_gammaI____alphaI_GTP___betaI_gammaI',
+                             'flux_alphaI_betaI_gammaI____alphaI_GTP___betaI_gammaI__3',
+                             'flux_alphaI_betaI_gammaI____alphaI_GTP___betaI_gammaI__5']
+    for flux, legend in fluxes_to_plot:
+        flux_concat['flux_fraction'] = flux_concat[flux] / np.sum(
+            [flux_concat[f] for f in g_i_activation_fluxes], axis=0)
+        flux_values = flux_concat.groupby(level=1)['flux_fraction']  # group by time
+        mean_flux = flux_values.median()
+        lower_quantile = flux_values.quantile(0.25)
+        upper_quantile = flux_values.quantile(0.75)
+
+        plt.plot(flux_concat.groupby(level=1)['t'].mean(), mean_flux * 100,
+                 label=f"{legend} (median)")
+        plt.fill_between(flux_concat.groupby(level=1)['t'].mean(), lower_quantile, upper_quantile,
+                         alpha=0.3,
+                         label=f"{legend} (25-75th percentile)")
+
+    plt.legend()
+    plt.title(title)
+    plt.xlabel('Time [min]')
+    plt.ylabel('Flux contribution [%]')
+    plt.tight_layout()
+    plt.savefig(outpath)
+    # plt.show()
+    plt.close(fig)
 
 
 if __name__ == "__main__":
@@ -42,8 +123,19 @@ if __name__ == "__main__":
                                         os.path.join(results_dir, 'histories', 'hist_result.h5'),
                                        read_histories=False)
 
-    get_best_parameters(results, n_par_vector=1, end_p=True,
-                        out_path=os.path.join(results_dir, "best_parameter_vector.tsv"))
+    ######### feedback_parameter_histogram, Figure S8C #########
+    fval0 = results.optimize_result.list[0].fval
+    feedback_parameters = [r.x[-1] for r in results.optimize_result.list[:100] if r.fval < fval0 + 3.32]
+    print(len(feedback_parameters))
+    fig, ax = plt.subplots(figsize=(8.5, 6.8))
+    ax.hist(feedback_parameters, color="#FF800E", alpha=0.8)
+    ax.set_title('$\\xi_{G_I\_\\text{pRII}_{\\text{cAMP}}}$') #parameter_names_display(results.problem.x_names[-1])
+    ax.set_xlabel('log$_{10}$(parameter value)')
+    ax.set_ylabel('Frequency')
+    plt.savefig(os.path.join(figures_dir, 'feedback_parameter_histogram.svg'))
+
+    get_best_parameters(results, n_par_vector=100, end_p=True,
+                        out_path=os.path.join(results_dir, "best_parameter_vector_100.tsv"))
 
     simulate_and_visualize(model_name, model, model_petab_problem,
                            config['tolerances'],
@@ -51,3 +143,21 @@ if __name__ == "__main__":
                            figures_dir=figures_dir,
                            results_dir=results_dir,
                            type='')
+
+    # simulate fluxes for best parameter vectors and write to file
+    for i in range(30):
+        parameters_path = os.path.join(results_dir,
+                                       'best_parameter_vectors_100.tsv')
+        parameter_vector = pd.read_csv(parameters_path, sep='\t').values[i]
+        parameters = dict(zip(model_petab_problem.x_ids, parameter_vector))
+
+        result, amici_model = simulate_states_petab(
+            model, model_petab_problem,
+            tolerances=config['tolerances'],
+            parameters_path=os.path.join(results_dir,
+                                         'best_parameter_vectors_100.tsv'),
+            parameters_idx=i
+        )
+        outfig = os.path.join(results_dir, 'fluxes', f'start{i}')
+        os.makedirs(outfig, exist_ok=True)
+        write_fluxes(result, model, outfig)
