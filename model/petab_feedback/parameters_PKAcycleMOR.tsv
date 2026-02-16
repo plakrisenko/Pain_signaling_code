@@ -1,4 +1,10 @@
 parameterId	parameterName	parameterScale	lowerBound	upperBound	nominalValue	estimate	initializationPriorType	initializationPriorParameters	objectivePriorType	objectivePriorParameters
+AC_total	AC_{total}	log10	0.00001	1000	1	0				
+RII2_total	RII2_{total}	log10	0.00001	1000	1	0				
+fiveHT4_total	fiveHT4_total	log10	0.00001	1000	1	0				
+MOR_total	MOR_total	log10	0.00001	1000	1	0				
+alphaS_betaS_gammaS_total	alphaS_betaS_gammaS_total	log10	0.00001	1000	1	0				
+alphaI_betaI_gammaI_total	alphaI_betaI_gammaI_total	log10	0.00001	1000	1	0				
 KD_Fsk	KD_{Fsk}	log10	0.00001	1000	18.2578767950153	1	parameterScaleNormal	1.15;0.231	parameterScaleNormal	0.845098040014257;0.2
 KD_H89	KD_{H89}	log10	0.00001	1000	0.0479675748307029	1	parameterScaleNormal	-1.32;0.264	parameterScaleNormal	-1.318758762624413;0.2
 KD_IBMX	KD_{IBMX}	log10	0.00001	1000	12.4481304869518	1	parameterScaleNormal	1.08;0.216	parameterScaleNormal	1.0;0.2

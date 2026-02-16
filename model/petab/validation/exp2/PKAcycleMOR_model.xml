@@ -78,6 +78,12 @@
       <parameter metaid="Rp8_pCPT_cAMPS_pAB" id="Rp8_pCPT_cAMPS_pAB" value="0" constant="false"/>
       <parameter metaid="Rp_cAMPS_pAB" id="Rp_cAMPS_pAB" value="0" constant="false"/>
       <parameter metaid="fourABnOH" id="fourABnOH" value="0" constant="false"/>      
+      <parameter metaid="AC_total" id="AC_total" value="1" constant="true"/>
+      <parameter metaid="RII2_total" id="RII2_total" value="1" constant="true"/>
+      <parameter metaid="fiveHT4_total" id="fiveHT4_total" name="fiveHT4_total" value="1" constant="true"/>
+      <parameter metaid="MOR_total" id="MOR_total" name="MOR_total" value="1" constant="true"/>
+      <parameter metaid="alphaS_betaS_gammaS_total" id="alphaS_betaS_gammaS_total" name="alphaS_betaS_gammaS_total" value="1" constant="true"/>
+      <parameter metaid="alphaI_betaI_gammaI_total" id="alphaI_betaI_gammaI_total" name="alphaI_betaI_gammaI_total" value="1"  constant="true"/>
       <parameter metaid="kf_Fsk" id="kf_Fsk" value="0" constant="false"/>
       <parameter metaid="kf_H89" id="kf_H89" value="0" constant="false"/>
       <parameter metaid="kf_RII_2__RII_C_2" id="kf_RII_2__RII_C_2" value="0" constant="false"/>
