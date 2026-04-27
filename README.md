@@ -34,7 +34,7 @@ and the parameter estimation problem was described in the [PEtab format](https:/
   - `PKAcycleMOR.yaml`  
     [YAML file for grouping files](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#yaml-file-for-grouping-files).
   - `PKAcycleMOR_model.xml`  
-    [SBML model definition](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#visualization-table).
+    [SBML model definition](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#sbml-model-definition).
   - `visualizationSpecification_PKAcycleMOR.tsv`  
     [Visualization table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#visualization-table).
 
