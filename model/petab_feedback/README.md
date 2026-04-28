@@ -6,10 +6,10 @@ complex. Specifically, the core model was extended by two reactions, one for eac
 
 $$
 kf_{\alpha_I\beta_I\gamma_I} \cdot 
-\xi_{\alpha_I\beta_I\gamma_I,\mathrm{MOR\_DAMGO}} \cdot 
-\xi_{\alpha_I\beta_I\gamma_I,\mathrm{RIIp\_cAMP}} \cdot 
-\mathrm{MOR\_DAMGO} \cdot 
-\left( \mathrm{RIIp\_cAMP\_2} + \mathrm{RIIp\_Sp8\_Br\_cAMPS\_2} \right) \cdot 
+\xi_{\alpha_I\beta_I\gamma_I,\text{MOR_DAMGO}} \cdot 
+\xi_{\alpha_I\beta_I\gamma_I,\text{RIIp_cAMP}} \cdot 
+\text{MOR_DAMGO} \cdot 
+\left( \text{RIIp_cAMP_2} + \text{RIIp_Sp8_Br_cAMPS_2} \right) \cdot 
 \alpha_I\beta_I\gamma_I,
 $$
 
