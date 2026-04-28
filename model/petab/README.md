@@ -40,26 +40,26 @@ To address this issue, we introduce additional synthesis and degradation reactio
 For MOR, we define synthesis and degradation rates as
 
 $$
-\text{MOR} \cdot (0 \text{ if } \text{Fentanyl\_level} + \text{DAMGO\_level} > 0,\ 1 \text{ otherwise})
+\text{MOR} \cdot (0 \text{ if } \text{Fentanyl}_\text{level} + \text{DAMGO}_\text{level} > 0,\ 1 \text{ otherwise})
 $$
 
 and
 
 $$
-\text{MOR}^2 \cdot (0 \text{ if } \text{Fentanyl\_level} + \text{DAMGO\_level} > 0,\ 1 \text{ otherwise})
+\text{MOR}^2 \cdot (0 \text{ if } \text{Fentanyl}_\text{level} + \text{DAMGO}_\text{level} > 0,\ 1 \text{ otherwise})
 $$
 
 respectively.
 Analogously, for the 5-HT$_4$ receptor, we introduce a synthesis reaction with rate
 
 $$
-\text{5-HT}_4 \cdot (0 \text{ if } \text{5-HT\_level} > 0,\ 1 \text{ otherwise})
+\text{5-HT}_4 \cdot (0 \text{ if } \text{5-HT}_\text{level} > 0,\ 1 \text{ otherwise})
 $$
 
 and a degradation reaction with rate
 
 $$
-\text{5-HT}_4^2 \cdot (0 \text{ if } \text{5-HT\_level} > 0,\ 1 \text{ otherwise}).
+\text{5-HT}_4^2 \cdot (0 \text{ if } \text{5-HT}_\text{level} > 0,\ 1 \text{ otherwise}).
 $$
 
 These additional reactions break the conservation in ligand-free conditions and ensure 
