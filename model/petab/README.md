@@ -33,7 +33,7 @@ Additionally, in the original formulation, two conserved quantities arise that h
 Specifically, the total amount of MOR is conserved when no ligand (DAMGO or Fentanyl) is present, 
 as we assume that MOR undergoes noticeable degradation (or internalization) only when bound to a ligand. 
 As a result, in ligand-free conditions, an additional conservation law emerges, which can lead to numerical difficulties. 
-The same issue applies to the 5-HT$_4$ receptor in the absence of its ligand, 5-HT.
+The same issue applies to the 5-HT₄ receptor in the absence of its ligand, 5-HT.
 This situation occurs, for example, in the control condition used in our study, 
 which does not include any receptor ligands and is employed for model pre-equilibration during each simulation.
 To address this issue, we introduce additional synthesis and degradation reactions that are active only in the absence of ligands.
@@ -50,7 +50,7 @@ $$
 $$
 
 respectively.
-Analogously, for the 5-HT$_4$ receptor, we introduce a synthesis reaction with rate
+Analogously, for the 5-HT₄ receptor, we introduce a synthesis reaction with rate
 
 $$
 \text{5-HT}_4 \cdot (0 \text{ if } \text{5-HT}_\text{level} > 0,\ 1 \text{ otherwise})
