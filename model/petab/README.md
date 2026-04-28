@@ -37,7 +37,7 @@ The same issue applies to the 5-HT$_4$ receptor in the absence of its ligand, 5-
 This situation occurs, for example, in the control condition used in our study, 
 which does not include any receptor ligands and is employed for model pre-equilibration during each simulation.
 To address this issue, we introduce additional synthesis and degradation reactions that are active only in the absence of ligands.
-For MOR, we define synthesis and degradation rates as
+For MOR, we define synthesis and degradation rates as\
 $$
 \text{MOR} \cdot
 \begin{cases}
@@ -45,7 +45,7 @@ $$
     1, & \text{else}
 \end{cases},
 $$
-and
+and\
 $$
 \text{MOR}^2 \cdot
 \begin{cases}
@@ -54,7 +54,7 @@ $$
 \end{cases},
 $$
 respectively.
-Analogously, for the 5-HT$_4$ receptor, we introduce a synthesis reaction with rate
+Analogously, for the 5-HT$_4$ receptor, we introduce a synthesis reaction with rate\
 $$
 \text{5-HT}_4 \cdot
 \begin{cases}
@@ -62,7 +62,7 @@ $$
     1, & \text{else}
 \end{cases},
 $$
-and a degradation reaction with rate
+and a degradation reaction with rate\
 $$
 \text{5-HT}_4^2 \cdot
 \begin{cases}
