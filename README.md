@@ -5,7 +5,7 @@ This repository contains all python files and (supplementary) figures for the ma
 
 ![image](figures/main_figure.png)
 
-## Models
+## Models and parameter estimation problems
 We developed a mechanistic model of PKA activity in nociceptive neurons that explicitly links 
 receptor activation to downstream kinase regulation. The model is implemented in the Systems Biology Markup Language ([SBML](https://sbml.org/)), 
 and the parameter estimation problem was described in the [PEtab format](https://github.com/PEtab-dev/PEtab). 
@@ -14,9 +14,12 @@ and the parameter estimation problem was described in the [PEtab format](https:/
   PEtab files for the core model of PKA activity in nociceptive neurons. The model captures ligand-dependent receptor
   activation, subsequent G-protein signaling, and its regulatory effects on AC activity and
   cAMP synthesis, ultimately linking these processes to PKA activation through cAMP
-  binding.
+  binding. The SBML model definition is provided in the file `PKAcycleMOR_model.xml`. 
+  This file is identical across all nested folders and is duplicated for convenience when performing 
+  model validation and running _in silico_ experiments. 
+  The model parameters are specified in the `parameters_PKAcycleMOR.tsv`, which are required for model simulation.
   - `in_silico_exp`  
-    This folder contains PEtab files for _in silico_ experiments performed in the study.
+    This folder contains PEtab files for _in silico_ experiments performed in the study. 
   - `validation`  
     This folder contains PEtab files for performing model validation.
   - `experimentalCondition_PKAcycleMOR.tsv`  
@@ -30,7 +33,8 @@ and the parameter estimation problem was described in the [PEtab format](https:/
   - `observables_PKAcycleMOR.tsv`  
     [Observables table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#observables-table).
   - `parameters_PKAcycleMOR.tsv`  
-    [Parameter table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#parameter-table).
+    [Parameter table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#parameter-table). 
+    The best parameter values found during model calibration are reported in the `nominalValue` column.
   - `PKAcycleMOR.yaml`  
     [YAML file for grouping files](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#yaml-file-for-grouping-files).
   - `PKAcycleMOR_model.xml`  
