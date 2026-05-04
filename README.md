@@ -5,6 +5,21 @@ This repository contains all python files and (supplementary) figures for the ma
 
 ![image](figures/main_figure.png)
 
+## Requirements
+This project relies on the following key software packages:
+
+  - [PEtab](https://github.com/PEtab-dev/libpetab-python) (v0.7.0)
+  - [AMICI](https://github.com/AMICI-dev/AMICI) (v0.34.2)
+  - [pyPESTO](https://github.com/ICB-DCM/pyPESTO) (v0.5.7)
+  - [Fides](https://github.com/fides-dev/fides) (v0.8.0)
+
+Additional dependencies are listed in `requirements.txt`, 
+which can be installed with 
+```bash 
+pip install -r requirements.txt
+```
+The listed versions correspond to those used in this study. 
+
 ## Models and parameter estimation problems
 We developed a mechanistic model of PKA activity in nociceptive neurons that explicitly links 
 receptor activation to downstream kinase regulation. The model is implemented in the Systems Biology Markup Language ([SBML](https://sbml.org/)), 
