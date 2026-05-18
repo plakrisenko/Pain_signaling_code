@@ -32,11 +32,12 @@ and the parameter estimation problem was described in the [PEtab format](https:/
   binding. The SBML model definition is provided in the file `PKAcycleMOR_model.xml`. 
   This file is identical across all nested folders and is duplicated for convenience when performing 
   model validation and running _in silico_ experiments. 
-  The model parameters are specified in the `parameters_PKAcycleMOR.tsv`, which are required for model simulation.
+  The model parameters that are required for model simulation are specified in `parameters_PKAcycleMOR.tsv`.
   - `in_silico_exp`  
-    This folder contains PEtab files for _in silico_ experiments performed in the study. 
+    This folder contains PEtab files for _in silico_ experiments shown in Figure 7. 
   - `validation`  
-    This folder contains PEtab files for performing model validation.
+    This folder contains PEtab files for simulating the conditions contained in the validation set.
+    This was used to generate Figure 6.
   - `experimentalCondition_PKAcycleMOR.tsv`  
     [Condition table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#condition-table). 
     Conditions ending in `_\d+` (e.g. `model1_data1_1`-`model1_data1_9`) are added to the table for simulation and visualization purposes.
