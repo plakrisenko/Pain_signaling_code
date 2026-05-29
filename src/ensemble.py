@@ -635,6 +635,16 @@ def visualize_ensemble_barplot(
             label="measurement",
         )
 
+    # plot individual measurement points
+    x_pos = np.arange(len(x_names))
+    for i, (name, group) in enumerate(
+            measurement_df[measurement_df['experimentId'] == e_id]
+                    .groupby('simulationConditionId')
+    ):
+        y = group['measurement'].values
+
+        axs.scatter([x_pos[i]+bar_kwargs["width"]/2]*len(y), y, color='black', alpha=0.7, zorder=10)
+
     bar_kwargs["width"] = -bar_kwargs["width"]
     axs.bar(
         x_names,
