@@ -337,7 +337,7 @@ def visualize_doseresponse_ensemble(
         quant_vals = obs_quantiles[d_index] if d_index < len(obs_quantiles) else np.array([[], []])
 
         # label = f"{dataset_ids_and_params[d_index][0]}"
-        label = f"{dataset_id_to_label(petab_problem, dataset_ids_and_params[d_index][0])}"
+        label = dataset_id_to_label(petab_problem, dataset_ids_and_params[d_index][0])
         p = axs.plot(x_vals, mean_vals, label=label)
         if quant_vals.size:
             axs.fill_between(x_vals, quant_vals[0], quant_vals[1], alpha=0.35)
@@ -352,23 +352,25 @@ def visualize_doseresponse_ensemble(
                     'simulationConditionId'].unique()
             ]
 
-            meas_means = measurement_df[(measurement_df['observableId'] ==
-                                         observable_ids[obs_index]) &
-                                 (measurement_df['datasetId'] ==
-                                  dataset_ids_and_params[d_index][0])].groupby(
-                'simulationConditionId')['measurement'].mean()
+            meas_filtered = measurement_df[(measurement_df['observableId'] ==
+                                            observable_ids[obs_index]) &
+                                           (measurement_df['datasetId'] ==
+                                            dataset_ids_and_params[d_index][0])].groupby(
+                'simulationConditionId')['measurement']
 
-            meas_std = measurement_df[(measurement_df['observableId'] ==
-                                       observable_ids[obs_index]) &
-                                 (measurement_df['datasetId'] ==
-                                  dataset_ids_and_params[d_index][0])].groupby(
-                'simulationConditionId')['measurement'].std()
+            # Compute statistics from the grouped data
+            meas_means = meas_filtered.mean()
+            # fix condition order
+            meas_means = meas_means.sort_index(
+                key=lambda idx: idx.str.extract(r'(\d+)$')[0].astype(int)
+            )
 
-            sqrt_n = np.sqrt(measurement_df[(meas_df['observableId'] ==
-                                             observable_ids[obs_index]) &
-                                 (measurement_df['datasetId'] ==
-                                  dataset_ids_and_params[d_index][0])].groupby(
-                'simulationConditionId')['measurement'].size() - 1)
+            meas_std = meas_filtered.std()
+            meas_std = meas_std.sort_index(
+                key=lambda idx: idx.str.extract(r'(\d+)$')[0].astype(int)
+            )
+
+            sqrt_n = np.sqrt(meas_filtered.size() - 1)
             meas_sem = meas_std / sqrt_n
             if e_id == "JI09_150302_Drg345_343_CycNuc":
                 mes_x = [60 - x for x in mes_x]
@@ -480,7 +482,7 @@ def visualize_ensemble(
         p = axs.plot(
             sim_timepoints,
             obs_means[cond_index],
-            label=f"{condition_id_to_label(petab_problem, condition)}",
+            label=condition_id_to_label(petab_problem, condition),
         )
         axs.fill_between(
             sim_timepoints,
