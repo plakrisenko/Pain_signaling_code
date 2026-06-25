@@ -76,6 +76,8 @@ This repository includes several analysis scripts in `src/` used to run optimiza
 
 - `src/optimization.py`  
   Implements the startpoint sampling, parameter estimation, saving results to HDF5, simulation with best parameter vectors, and profile posterior calculations. Key entry points: `sample_startpoints()`, `optimize()`, `simulate_w_best_parameter()` / `simulate_and_visualize()`, and `create_profiles()`.
+  Figure 2a and b were generated using `simulate_and_visualize()`. 
+  Figure 4 was generated using `visualize_profile_confidence_intervals`.
 
 - `src/in_silico_experiments.py`  
   Driver script for running in‑silico experiments (uses the PEtab problem in `petab/in_silico_exp`). It builds ensembles from optimization results and produces ensemble visualizations and state trajectory plots via `create_prediction()` and the plotting helpers in `src/ensemble.py`.
@@ -85,3 +87,11 @@ This repository includes several analysis scripts in `src/` used to run optimiza
 
 - `src/ensemble.py`  
   Core ensemble utilities: construct ensembles (from optimization endpoints or histories), predict observables and full state trajectories for all ensemble members, and state visualizations.
+  Figures 2 and 5 were generated using this script, as well as the Supplementary Figure S4.
+
+- `src/visualization.py`  
+  Helper functions for plotting and visualizing simulation results, including observables and state trajectories. Used by `optimization.py`, `in_silico_experiments.py`, and `feedback_hypothesis.py`.
+
+- `src/validation.py`  
+  Driver script for simulating the validation dataset (uses the PEtab problem in `petab/validation`). It produces visualizations of the validation data and model predictions.
+  Figure 6 was generated using this script.
