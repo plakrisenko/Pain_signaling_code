@@ -123,7 +123,7 @@ if __name__ == "__main__":
                                         os.path.join(results_dir, 'histories', 'hist_result.h5'),
                                        read_histories=False)
 
-    ######### feedback_parameter_histogram, Figure S8C #########
+    ######### feedback_parameter_histogram, Figure 8C #########
     fval0 = results.optimize_result.list[0].fval
     feedback_parameters = [r.x[-1] for r in results.optimize_result.list[:100] if r.fval < fval0 + 3.32]
     print(len(feedback_parameters))
@@ -137,6 +137,7 @@ if __name__ == "__main__":
     get_best_parameters(results, n_par_vector=100, end_p=True,
                         out_path=os.path.join(results_dir, "best_parameter_vector_100.tsv"))
 
+    # Figure 8a
     simulate_and_visualize(model_name, model, model_petab_problem,
                            config['tolerances'],
                            petab_dir,
@@ -173,6 +174,8 @@ if __name__ == "__main__":
           'Fentanyl (0.1 $\mu$M)')]:
         ids_set = list(range(5))
         os.makedirs(os.path.join(figures_dir, 'fluxes'), exist_ok=True)
+
+        # Figure 8d
         visualize_Gactivity_flux(
             [os.path.join(results_dir, 'fluxes', f'start{i}', f'{condition}+model1_data49.tsv') for
              i in ids_set],
