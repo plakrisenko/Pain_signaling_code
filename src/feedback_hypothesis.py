@@ -97,7 +97,7 @@ if __name__ == "__main__":
     model_name = config['model_name']
     petab_dir = os.path.join(base_dir, 'petab_feedback')
     yaml_file = os.path.join(petab_dir, config['petab_model_yaml'])
-    results_dir = os.path.join(base_dir, 'results')
+    results_dir = os.path.join(base_dir, 'results_feedback')
     figures_dir = os.path.join(results_dir, 'figures')
 
     os.makedirs(figures_dir, exist_ok=True)

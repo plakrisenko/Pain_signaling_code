@@ -81,9 +81,11 @@ This repository includes several analysis scripts in `src/` used to run optimiza
 
 - `src/in_silico_experiments.py`  
   Driver script for running in‑silico experiments (uses the PEtab problem in `petab/in_silico_exp`). It builds ensembles from optimization results and produces ensemble visualizations and state trajectory plots via `create_prediction()` and the plotting helpers in `src/ensemble.py`.
+  Figure 7 was generated using this script.
 
 - `src/feedback_hypothesis.py`  
   Utilities for exploring the proposed feedback mechanism: simulate state trajectories from chosen parameter vectors, write flux tables (per-condition), and plot G-protein activation flux contributions. Useful functions include `simulate_states_petab()`, `write_fluxes()`, and `visualize_Gactivity_flux()`.
+  Figure 8 was generated using this script.
 
 - `src/ensemble.py`  
   Core ensemble utilities: construct ensembles (from optimization endpoints or histories), predict observables and full state trajectories for all ensemble members, and state visualizations.
