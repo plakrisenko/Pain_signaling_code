@@ -481,7 +481,7 @@ def custom_visualize_dataset14_ensemble(
         os.path.join(os.path.dirname(figurepath), f'relative_errors_{e_id}_{len(rdatas_list)}.tsv'),
         sep='\t', index=False)
 
-    axs.set_xlabel("Pre-treatment time [min]")
+    axs.set_xlabel("Pre-treatment duration [min]")
     axs.set_ylabel(f"{observable_ids[obs_index]} [au]")
     axs.set_title(f"{e_id}")
     axs.set_xticks([0, 1, 2, 5, 10, 15, 20, 25, 30])
