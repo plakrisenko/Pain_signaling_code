@@ -67,7 +67,7 @@ def plot_residuals(petab_problem: petab.v1.Problem,
     measurement_df = petab_problem.measurement_df
     simulations_df = petab.v1.get_simulation_df(simu_df_path)
 
-    titles = ['pRII', 'pRII immunoblotting', 'C$_{\\alpha}$']
+    titles = ['pRII intensity', 'relative pRII density, immunoblotting', 'C$_{\\alpha}$ intensity']
     for obs, title in zip(
             [['pRII_Microscopy', 'pRII_Microscopy_LK15_150727'], ['pRII_Western'],
              ['Calpha_Microscopy']],
