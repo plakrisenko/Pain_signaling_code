@@ -13,7 +13,7 @@ This project relies on the following key software packages:
   - [pyPESTO](https://github.com/ICB-DCM/pyPESTO) (v0.5.7)
   - [Fides](https://github.com/fides-dev/fides) (v0.8.0)
 
-Additional dependencies are listed in `requirements.txt`, 
+The analysis was performed using Python 3.11.1. Additional dependencies are listed in `requirements.txt`, 
 which can be installed with 
 ```bash 
 pip install -r requirements.txt
