@@ -660,6 +660,7 @@ def simulate_and_visualize_exp2():
         "JI09_150330_Drg350_348_CycNuc",
     ]:
         observable_id = "pRII_Microscopy"
+        # Figure 6a
         visualize_ensemble(
             model_petab_problem,
             prediction,
@@ -709,9 +710,10 @@ if __name__ == "__main__":
 
     model_name = config["model_name"]
 
+    # validation of dataset 2, Figure 6a
     simulate_and_visualize_exp2()
 
-    # validation of dataset 13 and 14 with scaling estimation
+    # validation of dataset 13 and 14 with scaling estimation, Figure 6b and 6c
     exp_with_scaling_estimate = True
     if exp_with_scaling_estimate:
         petab_dir = os.path.join(base_dir, "petab", "validation")
