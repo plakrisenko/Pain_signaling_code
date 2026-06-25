@@ -48,6 +48,7 @@ if __name__ == "__main__":
         "insilico_Fentanyl_5HT",
     ]:
         observable_id = "pRII_Microscopy"
+        # Figure 7a
         visualize_ensemble(
             model_petab_problem,
             prediction,
@@ -61,7 +62,7 @@ if __name__ == "__main__":
         )
 
 
-    #states
+    # states
     ensemble, prediction = create_prediction(
         base_dir,
         model,
@@ -98,6 +99,7 @@ if __name__ == "__main__":
             "RIIp_cAMP_C_2",
             "RIIp_cAMP_2",
         ]:
+            # Figure 7b and 7c
             visualize_ensemble_states(
                 model,
                 model_petab_problem,
