@@ -618,7 +618,8 @@ def compute_relative_errors(petab_problem,
     print("Mean relative error:", np.mean(relative_errors) * 100)
 
 
-def simulate_and_visualize_exp2():
+def simulate_and_visualize_exp2(config, from_hist=True):
+    model_name = config["model_name"] + "exp2"
     petab_dir = os.path.join(base_dir, "petab", "validation", "exp2")
     yaml_file = os.path.join(petab_dir, config["petab_model_yaml"])
     results_dir = os.path.join(base_dir,
@@ -647,7 +648,7 @@ def simulate_and_visualize_exp2():
         results_dir,
         max_n_vectors=np.inf,
         tolerances=config["tolerances"],
-        from_hist=True,
+        from_hist=from_hist,
         simulate_states=False,
     )
     compute_relative_errors(model_petab_problem, prediction, measurement_df,
@@ -708,10 +709,8 @@ if __name__ == "__main__":
     with open(os.path.join(base_dir, "config.yaml"), "r") as file:
         config = yaml.safe_load(file)
 
-    model_name = config["model_name"]
-
     # validation of dataset 2, Figure 6a
-    simulate_and_visualize_exp2()
+    simulate_and_visualize_exp2(config, from_hist=True)
 
     # validation of dataset 13 and 14 with scaling estimation, Figure 6b and 6c
     exp_with_scaling_estimate = True
@@ -723,6 +722,7 @@ if __name__ == "__main__":
 
         os.makedirs(figures_dir, exist_ok=True)
 
+        model_name = config["model_name"] + "exp13_14"
         model, model_petab_problem = _model_import(
             base_dir=base_dir,
             yaml_file=yaml_file,
