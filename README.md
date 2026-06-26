@@ -68,7 +68,7 @@ PEtab files for the extended model are located in
 - `model/petab_feedback`  
   An additional reaction for G<sub>I</sub> protein activation, 
   with a rate proportional to the concentration of the pRII<sub>2</sub>:cAMP<sub>4</sub> complex was added to the core model.
-
+  This folder contains PEtab files for _in silico_ hypothesis testing shown in Figure 8.
 
 ## Scripts
 
