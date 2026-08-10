@@ -150,6 +150,124 @@ def create_prediction(
     return my_ensemble, ensemble_prediction
 
 
+def create_prediction_from_profiles(
+    base_dir,
+    amici_model,
+    petab_problem,
+    results_folder: str,
+    tolerances: dict,
+    max_n_vectors: float = np.inf,
+    simulate_states: bool = False,
+):
+    """Build an ensemble from profile results and produce predictions using a PyPESTO predictor.
+
+    Constructs an ensemble by collecting parameter vectors from profile results
+    where the function values are within a threshold of the best optimization result.
+    If more vectors are collected than `max_n_vectors`, a random subset is selected.
+
+    Parameters
+    ----------
+    base_dir:
+        Base directory used when creating the PyPESTO problem/importer; this
+        is passed to `create_pypesto_problem` and determines where model
+        artifacts are located/written.
+    amici_model:
+        An AMICI model instance (returned by PEtab/AMICI import).
+    petab_problem:
+        A `petab.v1.Problem` that contains the measurement/condition/visual
+        specifications for the predictions.
+    results_folder:
+        Directory containing the PyPESTO `result.h5` and `profile_results.h5`
+        files needed for ensemble construction.
+    tolerances:
+        Dict-like object forwarded to `create_pypesto_problem`; it should
+        contain at least the key `'n_threads'` and any solver tolerances used
+        to configure AMICI/PyPESTO.
+    max_n_vectors:
+        Maximum number of ensemble members to retain. If the number of vectors
+        collected exceeds this, a random subset is selected. Defaults to no limit.
+    simulate_states:
+        If True the predictor will be created with a `post_processor` that
+        extracts full AMICI state trajectories from the simulation results;
+        otherwise only observables are predicted.
+
+    Returns
+    -------
+    tuple
+        A tuple `(ensemble, ensemble_prediction)` where `ensemble` is the
+        constructed `pypesto.ensemble.Ensemble` and `ensemble_prediction` is
+        the object returned by `ensemble.predict(...)` containing prediction
+        results (e.g. `prediction_results`, `condition_ids`, etc.).
+
+    """
+
+    alpha = 0.01
+    th = stats.chi2.ppf(1 - alpha, 1) / 2
+
+    result = read_optimization_results(
+        os.path.join(results_folder, "result.h5")
+    )
+
+    cutoff = result.optimize_result.list[0].fval + th
+
+    pr_path = os.path.join(results_folder, 'profile_results.h5')
+    pypesto_profile_reader = ProfileResultHDF5Reader(pr_path)
+    profile_read = pypesto_profile_reader.read()
+
+    # Collect all x_path vectors from all ProfilerResults
+    all_x_vectors = []
+    for profiler_result in profile_read.profile_result.list[0]:
+        if profiler_result is not None:
+            mask = profiler_result.fval_path <= cutoff
+            filtered_x_vectors = profiler_result.x_path[result.problem.x_free_indices][:, mask]
+            all_x_vectors.extend(filtered_x_vectors.transpose())
+
+    x_names = [
+        result.problem.x_names[i] for i in result.problem.x_free_indices
+    ]
+
+    if max_n_vectors:
+        # Subsample vectors if max_n_vectors is given
+        n_vectors = min(len(all_x_vectors), int(max_n_vectors))
+
+        indices = np.random.choice(len(all_x_vectors), n_vectors, replace=False)
+        all_x_vectors = [all_x_vectors[i] for i in indices]
+
+    # Create ensemble from collected vectors
+    my_ensemble = Ensemble(x_vectors=np.asarray(all_x_vectors).transpose(),
+                           x_names=x_names)
+
+    pypesto_problem, startpoint_method, importer = create_pypesto_problem(
+        base_dir, amici_model, petab_problem, tolerances
+    )
+    if isinstance(pypesto_problem.objective, pypesto.objective.AggregatedObjective):
+        pypesto_problem.objective._objectives[0].update_from_problem(
+            dim_full=pypesto_problem.dim_full,
+            x_free_indices=pypesto_problem.x_free_indices,
+            x_fixed_indices=pypesto_problem.x_fixed_indices,
+            x_fixed_vals=pypesto_problem.x_fixed_vals,
+        )
+        objective = pypesto_problem.objective._objectives[0]
+        objective.pre_post_processor = pypesto_problem.objective._objectives[0].pre_post_processor
+    else:
+        objective = pypesto_problem.objective
+        objective.pre_post_processor = pypesto_problem.objective.pre_post_processor
+
+    # create prediction via PEtab
+    if simulate_states:
+        predictor = importer.create_predictor(
+            objective=objective,
+            post_processor=partial(post_processor, n_output=amici_model.nx_rdata),
+        )
+    else:
+        predictor = importer.create_predictor(objective=objective)
+
+    # perform a prediction for the ensemble
+    ensemble_prediction = my_ensemble.predict(predictor=predictor)
+    my_ensemble.predictions.append(ensemble_prediction)
+    return my_ensemble, ensemble_prediction
+
+
 def visualize_doseresponse_ensemble(
         e_id,
         dataset_ids_and_params: list[tuple[str, str]],
