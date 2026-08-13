@@ -15,6 +15,7 @@ from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 from pypesto.ensemble import Ensemble
 from pypesto.C import AMICI_T, AMICI_X, AMICI_STATUS
+from pypesto.store import ProfileResultHDF5Reader
 
 from utils import (
     _model_import,
@@ -226,7 +227,7 @@ def create_prediction_from_profiles(
         result.problem.x_names[i] for i in result.problem.x_free_indices
     ]
 
-    if max_n_vectors:
+    if max_n_vectors < np.inf:
         # Subsample vectors if max_n_vectors is given
         n_vectors = min(len(all_x_vectors), int(max_n_vectors))
 

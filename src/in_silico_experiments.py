@@ -3,7 +3,8 @@ import yaml
 
 import numpy as np
 
-from ensemble import create_prediction, visualize_ensemble, visualize_ensemble_states
+from ensemble import (create_prediction, create_prediction_from_profiles, visualize_ensemble,
+                      visualize_ensemble_states)
 from utils import (_model_import)
 
 
@@ -30,18 +31,30 @@ if __name__ == "__main__":
     )
 
     measurement_df = None
+    ens_from_profiles = True
 
     # observables
-    _, prediction = create_prediction(
-        base_dir,
-        model,
-        model_petab_problem,
-        results_dir,
-        max_n_vectors=np.inf,
-        tolerances=config["tolerances"],
-        from_hist=True,
-        simulate_states=False,
-    )
+    if ens_from_profiles:
+        _, prediction = create_prediction_from_profiles(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            simulate_states=False,
+        )
+    else:
+        _, prediction = create_prediction(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            from_hist=True,
+            simulate_states=False,
+        )
 
     for e_id in [
         "insilico_DAMGO_5HT",
