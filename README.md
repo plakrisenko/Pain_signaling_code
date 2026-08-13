@@ -53,6 +53,8 @@ PEtab files for the core model of PKA activity in nociceptive neurons are locate
     Comparisons between model simulations and experimental data contained in this file are shown in Figure 3.
   - `measurements_smooth.tsv`  
     Measurement table for model simulation and visualization, including additional time points and conditions to enable finer resolution and smoother trajectories.
+    Measurement values at the additional time points are placeholders and are not used for parameter estimation.
+    Actual experimental measurements are contained in `measurementData_PKAcycleMOR.tsv`.
   - `observables_PKAcycleMOR.tsv`  
     [Observables table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#observables-table).
   - `parameters_PKAcycleMOR.tsv`  
