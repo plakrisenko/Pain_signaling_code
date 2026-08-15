@@ -77,6 +77,27 @@ PEtab files for the extended model are located in
   An additional reaction for G<sub>I</sub> protein activation, 
   with a rate proportional to the concentration of the pRII<sub>2</sub>:cAMP<sub>4</sub> complex was added to the core model.
   This folder contains PEtab files for _in silico_ hypothesis testing shown in Figure 8.
+  - `experimentalCondition_PKAcycleMOR.tsv`  
+    [Condition table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#condition-table). 
+    Conditions ending in `_\d+` (e.g. `model1_data1_1`-`model1_data1_9`) are added to the table for simulation and visualization purposes.
+    All other conditions describe conditions of actually performed experiments.
+  - `measurementData_PKAcycleMOR.tsv`  
+    [Measurement table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#measurement-table) that contains experimental measurements that were used for parameter estimation (the training dataset).
+  - `measurements_smooth.tsv`  
+    Measurement table for model simulation and visualization, including additional time points and conditions to enable finer resolution and smoother trajectories.
+    Measurement values at the additional time points are placeholders and are not used for parameter estimation.
+    Actual experimental measurements are contained in `measurementData_PKAcycleMOR.tsv`.
+  - `observables_PKAcycleMOR.tsv`  
+    [Observables table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#observables-table).
+  - `parameters_PKAcycleMOR.tsv`  
+    [Parameter table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#parameter-table). 
+    The best parameter values found during model calibration are reported in the `nominalValue` column.
+  - `PKAcycleMOR.yaml`  
+    [YAML file for grouping files](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#yaml-file-for-grouping-files).
+  - `PKAcycleMOR_model.xml`  
+    [SBML model definition](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#sbml-model-definition).
+  - `visualizationSpecification_PKAcycleMOR.tsv`  
+    [Visualization table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#visualization-table).
 
 - `model/copasi`  
   This folder contains the COPASI model definition of the core model for most datasets used for parameter estimation.
