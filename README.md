@@ -41,9 +41,14 @@ PEtab files for the core model of PKA activity in nociceptive neurons are locate
   The model parameters that are required for model simulation are specified in `parameters_PKAcycleMOR.tsv`.
   - `in_silico_exp`  
     This folder contains PEtab files for _in silico_ experiments shown in Figure 7. 
+    The `measurementData_PKAcycleMOR.tsv` file in this folder contains placeholder values for the measurements, 
+    which are not used for parameter estimation.
   - `validation`  
     This folder contains PEtab files for simulating the conditions contained in the validation set.
-    This was used to generate Figure 6.
+    This was used to generate Figure 6. Files `measurementData_PKAcycleMOR_only_validation.tsv` and 
+    `exp2/measurementData_exp2.tsv` contain measurements that were only used for model validation.
+    Files `measurementData_PKAcycleMOR_only_validation__smooth.tsv` and `exp2/measurementData_exp2_smooth.tsv` 
+    in this folder contain placeholder values for the measurements, that were used for model simulation.
   - `experimentalCondition_PKAcycleMOR.tsv`  
     [Condition table](https://petab.readthedocs.io/en/latest/v1/documentation_data_format.html#condition-table). 
     Conditions ending in `_\d+` (e.g. `model1_data1_1`-`model1_data1_9`) are added to the table for simulation and visualization purposes.
