@@ -733,7 +733,7 @@ if __name__ == "__main__":
         config = yaml.safe_load(file)
 
     # validation of dataset 2, Figure 6a
-    simulate_and_visualize_exp2(config, from_hist=True)
+    simulate_and_visualize_exp2(config, ens_from = "profiles")
 
     # validation of dataset 13 and 14 with scaling estimation, Figure 6b and 6c
     exp_with_scaling_estimate = True
@@ -759,20 +759,50 @@ if __name__ == "__main__":
         result = read_optimization_results(
             os.path.join(results_dir, 'result.h5'),
             os.path.join(results_dir, "histories", 'hist_result.h5'),
-            read_histories=True)
+            read_histories=False)
+        pr_path = os.path.join(results_dir, 'profile_results_combined.h5')
+        pypesto_profile_reader = ProfileResultHDF5Reader(pr_path)
+        profile_read = pypesto_profile_reader.read()
+        result.profile_result = profile_read.profile_result
 
         alpha = 0.01
         th = stats.chi2.ppf(1 - alpha, 1) / 2
 
-        from_hist = True
-        if from_hist:
+        ens_from = 'profiles' # 'history', 'endpoints'
+        max_size = np.inf
+        if ens_from == 'history':
             my_ensemble = Ensemble.from_optimization_history(result,
-                                                             max_size=np.inf,
+                                                             max_size=max_size,
                                                              rel_cutoff=th
                                                              )
+        elif ens_from == 'profiles':
+            cutoff = result.optimize_result.list[0].fval + th
+            # Collect all x_path vectors from all ProfilerResults
+            all_x_vectors = []
+            for profiler_result in profile_read.profile_result.list[0]:
+                if profiler_result is not None:
+                    mask = profiler_result.fval_path <= cutoff
+                    filtered_x_vectors = profiler_result.x_path[result.problem.x_free_indices][
+                        :, mask]
+                    all_x_vectors.extend(filtered_x_vectors.transpose())
+
+            x_names = [
+                result.problem.x_names[i] for i in result.problem.x_free_indices
+            ]
+
+            if max_size < np.inf:
+                # Subsample vectors if max_size is given
+                n_vectors = min(len(all_x_vectors), int(max_size))
+
+                indices = np.random.choice(len(all_x_vectors), n_vectors, replace=False)
+                all_x_vectors = [all_x_vectors[i] for i in indices]
+
+            # Create ensemble from collected vectors
+            my_ensemble = Ensemble(x_vectors=np.asarray(all_x_vectors).transpose(),
+                                   x_names=x_names)
         else:
             my_ensemble = Ensemble.from_optimization_endpoints(result,
-                                                               max_size=np.inf,
+                                                               max_size=max_size,
                                                                rel_cutoff=th
                                                                )
 
