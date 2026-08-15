@@ -1158,7 +1158,7 @@ if __name__ == "__main__":
         base_dir=base_dir,
         yaml_file=yaml_file,
         model_name=model_name,
-        # force_compile=True
+        force_compile=True
     )
     measurement_df = copy.deepcopy(model_petab_problem.measurement_df)
     measurement_df_smooth = petab.v1.get_measurement_df(
@@ -1168,18 +1168,30 @@ if __name__ == "__main__":
 
     visualize_ensemble_comparison(results_dir, figures_dir)
 
+    ens_from_profiles = True
     # Fig 3 (from_hist=False) and Fig 5 (from_hist=True)
     # observables
-    _, prediction = create_prediction(
-        base_dir,
-        model,
-        model_petab_problem,
-        results_dir,
-        max_n_vectors=np.inf,
-        tolerances=config["tolerances"],
-        from_hist=False,
-        simulate_states=False,
-    )
+    if ens_from_profiles:
+        _, prediction = create_prediction_from_profiles(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            simulate_states=False,
+        )
+    else:
+        _, prediction = create_prediction(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            from_hist=False,
+            simulate_states=False,
+        )
 
     dataset_ids1 = [
         ('JI09_150330_Drg353_351_CycNuc__4_ABnOH_and_ctrl', 'fourABnOH_level'),
@@ -1298,16 +1310,27 @@ if __name__ == "__main__":
 
     # for Supplementary Figure S4:
     # states
-    ensemble, prediction = create_prediction(
-        base_dir,
-        model,
-        model_petab_problem,
-        results_dir,
-        max_n_vectors=np.inf,
-        tolerances=config["tolerances"],
-        from_hist=True,
-        simulate_states=True,
-    )
+    if ens_from_profiles:
+        ensemble, prediction = create_prediction_from_profiles(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            simulate_states=True,
+        )
+    else:
+        ensemble, prediction = create_prediction(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            from_hist=True,
+            simulate_states=True,
+        )
 
     for e_id in [
         "LK023_21_MOR_Kinetik_DAMGO_Fsk",
