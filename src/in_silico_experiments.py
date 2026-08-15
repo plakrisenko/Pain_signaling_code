@@ -76,16 +76,27 @@ if __name__ == "__main__":
 
 
     # states
-    ensemble, prediction = create_prediction(
-        base_dir,
-        model,
-        model_petab_problem,
-        results_dir,
-        max_n_vectors=np.inf,
-        tolerances=config["tolerances"],
-        from_hist=True,
-        simulate_states=True,
-    )
+    if ens_from_profiles:
+        _, prediction = create_prediction_from_profiles(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            simulate_states=True,
+        )
+    else:
+        ensemble, prediction = create_prediction(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            from_hist=True,
+            simulate_states=True,
+        )
 
     for e_id in [
         "insilico_DAMGO_5HT",
