@@ -12,9 +12,10 @@ import petab
 import scipy.stats as stats
 
 from pypesto.ensemble import Ensemble
+from pypesto.store import ProfileResultHDF5Reader
 from scipy.optimize import minimize
 
-from ensemble import create_prediction, visualize_ensemble
+from ensemble import create_prediction, visualize_ensemble, create_prediction_from_profiles
 from utils import (
     _model_import,
     create_pypesto_problem,
@@ -618,7 +619,7 @@ def compute_relative_errors(petab_problem,
     print("Mean relative error:", np.mean(relative_errors) * 100)
 
 
-def simulate_and_visualize_exp2(config, from_hist=True):
+def simulate_and_visualize_exp2(config, ens_from="profiles"):
     model_name = config["model_name"] + "exp2"
     petab_dir = os.path.join(base_dir, "petab", "validation", "exp2")
     yaml_file = os.path.join(petab_dir, config["petab_model_yaml"])
@@ -641,16 +642,38 @@ def simulate_and_visualize_exp2(config, from_hist=True):
     model_petab_problem.measurement_df = measurement_df_smooth
 
     # observables
-    _, prediction = create_prediction(
-        base_dir,
-        model,
-        model_petab_problem,
-        results_dir,
-        max_n_vectors=np.inf,
-        tolerances=config["tolerances"],
-        from_hist=from_hist,
-        simulate_states=False,
-    )
+    if ens_from == "profiles":
+        _, prediction = create_prediction_from_profiles(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            simulate_states=False,
+        )
+    elif ens_from == 'history':
+        _, prediction = create_prediction(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            from_hist=True,
+            simulate_states=False,
+        )
+    else:
+        _, prediction = create_prediction(
+            base_dir,
+            model,
+            model_petab_problem,
+            results_dir,
+            max_n_vectors=np.inf,
+            tolerances=config["tolerances"],
+            from_hist=False,
+            simulate_states=False,
+        )
     compute_relative_errors(model_petab_problem, prediction, measurement_df,
                             e_id="JI09_150330_Drg350_348_CycNuc",
                             output_dir=figures_dir)
