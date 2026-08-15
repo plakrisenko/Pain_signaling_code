@@ -1065,22 +1065,53 @@ def ensemble_parameters_plot(
 def visualize_ensemble_comparison(results_folder, figures_dir):
     result = read_optimization_results(
         os.path.join(results_folder, "result.h5"),
-        os.path.join(results_folder, "histories", "hist_result_100.h5"),
+        os.path.join(results_folder, "histories", "hist_result.h5"),
         read_histories=True,
     )
+    pr_path = os.path.join(results_folder, 'profile_results.h5')
+    pypesto_profile_reader = ProfileResultHDF5Reader(pr_path)
+    profile_read = pypesto_profile_reader.read()
 
     alpha = 0.01
     th = stats.chi2.ppf(1 - alpha, 1) / 2
+    cutoff = result.optimize_result.list[0].fval + th
 
+    max_size = np.inf
     my_ensemble = Ensemble.from_optimization_endpoints(result,
-                                                       max_size=5,
+                                                       max_size=max_size,
                                                        rel_cutoff=th
                                                     )
     my_ensemble_hist = Ensemble.from_optimization_history(result,
-                                                          max_size=5,
+                                                          max_size=max_size,
                                                           rel_cutoff=th)
 
-    for ensemble, pf in zip([my_ensemble, my_ensemble_hist], ['endpoints', 'history']):
+    # Collect all x_path vectors from all ProfilerResults
+    all_x_vectors = []
+    for profiler_result in profile_read.profile_result.list[0]:
+        if profiler_result is not None:
+            mask = profiler_result.fval_path <= cutoff
+            filtered_x_vectors = profiler_result.x_path[result.problem.x_free_indices][:, mask]
+            all_x_vectors.extend(filtered_x_vectors.transpose())
+
+    x_names = [
+        result.problem.x_names[i] for i in result.problem.x_free_indices
+    ]
+
+    if max_size < np.inf:
+        # Subsample vectors if max_n_vectors is given
+        n_vectors = min(len(all_x_vectors), int(max_size))
+
+        indices = np.random.choice(len(all_x_vectors), n_vectors, replace=False)
+        all_x_vectors = [all_x_vectors[i] for i in indices]
+
+    # Create ensemble from collected vectors
+    my_ensemble_profiles = Ensemble(x_vectors=np.asarray(all_x_vectors).transpose(),
+                                    x_names=x_names,
+                                    lower_bound=result.problem.lb,
+                                    upper_bound=result.problem.ub)
+
+    for ensemble, pf in zip([my_ensemble, my_ensemble_hist, my_ensemble_profiles],
+                            ['endpoints', 'history', 'profiles']):
         scaling_p = []
         model_p = []
         scaling_p_ids = []
