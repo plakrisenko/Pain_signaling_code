@@ -18,7 +18,7 @@ which can be installed with
 ```bash 
 pip install -r requirements.txt
 ```
-The listed versions correspond to those used in this study. 
+The listed versions correspond to those used in this study.
 
 ## Models and parameter estimation problems
 We developed a mechanistic model of PKA activity in nociceptive neurons that explicitly links 
@@ -130,5 +130,55 @@ This repository includes several analysis scripts in `src/` used to run optimiza
   Helper functions for plotting and visualizing simulation results, including observables and state trajectories. Used by `optimization.py`, `in_silico_experiments.py`, and `feedback_hypothesis.py`.
 
 - `src/validation.py`  
-  Driver script for simulating the validation dataset (uses the PEtab problem in `petab/validation`). It produces visualizations of the validation data and model predictions.
+  Driver script for simulating the validation dataset (uses the PEtab problem in `petab/validation`). 
+  It produces visualizations of the validation data and model predictions.
   Figure 6 was generated using this script.
+
+## Reproducing the analysis
+
+The following steps reproduce the optimization and figure-generation workflow used in the manuscript. 
+The main entry point is `src/optimization.py`, which compiles the AMICI model, 
+samples optimization starting points, runs the parameter estimation, and saves the results in `model/results/`.
+
+1. Clone the repository and move into the project directory:
+   ```bash
+   git clone https://github.com/plakrisenko/Pain_signaling_code.git
+   cd Pain_signaling_code
+   ```
+   If you prefer to work from an archived release, the corresponding Zenodo download can be used instead of `git clone`.
+
+2. Create and activate a Python virtual environment:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
+
+3. Install the AMICI system requirements. The AMICI installation guide is the authoritative reference for platform-specific prerequisites:
+   https://amici.readthedocs.io/en/v0.34.2/python_installation.html.
+   In particular, make sure that the required C/C++ toolchain and SWIG dependencies are installed before installing the Python package.
+
+4. Install the project requirements:
+   ```bash
+   python -m pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+
+5. Adjust the simulation and optimization settings in `model/config.yaml` if needed. 
+   The most relevant setting is the number of local optimization runs:
+   ```yaml
+   optimize:
+     n_optimizations: 2
+   ```
+   This controls how many local optimization runs are started. The model calibration is computationally demanding, and increasing this value substantially (for example to 1000) can require significant CPU time and memory and may not be feasible on a standard laptop.
+
+6. Run the optimization workflow from the `src/` directory:
+   ```bash
+   cd src
+   python optimization.py
+   ```
+
+7. Inspect the generated outputs. The key files are:
+   - `model/results/result.h5` — optimization results
+   - `model/results/best_parameter_vector.tsv` — best-fit parameter vector
+   - `model/results/figures/` — generated plots for model fits and diagnostics
+   - `model/results/simulation_0/` — generated plots for model simulations with the best-fit parameter vector
