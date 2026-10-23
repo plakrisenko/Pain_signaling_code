@@ -197,3 +197,23 @@ samples optimization starting points, runs the parameter estimation, and saves t
    - `model/results/figures/ensemble_simulation` — These figures are used in the Fig. 3 and Fig. 5 of the manuscript.
    - `model/results/figures/ensemble_simulation/states` - These figures are used in the Supporting Information Fig S4.
    - `model/results/figures/parameter_uncertainty` — These figures are used in the Supporting Information Fig S3.
+
+9. Run the validation workflow from the `src/` directory to generate validation visualizations:
+   ```bash
+   python validation.py
+   ```
+   The resulting figures are:
+   - `model/results/figures/validation` — These figures are used in the Fig. 6 of the manuscript.
+
+10. Run the in-silico experiments from the `src/` directory to generate in-silico experiment visualizations:
+   ```bash
+   python in_silico.py
+   ```
+   The resulting figures are:
+   - `model/results/figures/ensemble_simulation/in_silico` — These figures are used in the Fig. 7 of the manuscript.
+     The two figures in Fig. 7 (b) are 
+     `model/results/figures/ensemble_simulation/in_silico/states/insilico_DAMGO_5HT__state_total_MOR_<n_ens>.svg`
+     and `model/results/figures/ensemble_simulation/in_silico/states/insilico_Fentanyl_5HT__state_total_MOR_<n_ens>.svg`,
+     where `<n_ens>` is the number of ensemble members used for the simulation.
+     The figure in Fig. 7 (c) is `model/results/figures/ensemble_simulation/in_silico/states/insilico_DAMGO_5HT__state_total_5HT4_<n_ens>.svg` or 
+     `model/results/figures/ensemble_simulation/in_silico/states/insilico_Fentanyl_5HT__state_total_5HT4_<n_ens>.svg`, as these two figures are identical.
