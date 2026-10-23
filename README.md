@@ -169,7 +169,12 @@ samples optimization starting points, runs the parameter estimation, and saves t
    optimize:
      n_optimizations: 2
    ```
-   This controls how many local optimization runs are started. The model calibration is computationally demanding, and increasing this value substantially (for example to 1000) can require significant CPU time and memory and may not be feasible on a standard laptop.
+   This controls how many local optimization runs are started. 
+   The model calibration is computationally demanding, and increasing this value substantially 
+   (for example to 1000) can require significant CPU time and memory and will not be feasible on a standard laptop.
+   Similarly, posterior profile calculations can be computationally demanding. 
+   To select parameters for which to compute posterior profiles, provide a list of parameter 
+   indices to `create_profiles` function in `src/optimization.py`.
 
 6. Run the optimization workflow from the `src/` directory:
    ```bash
@@ -180,5 +185,15 @@ samples optimization starting points, runs the parameter estimation, and saves t
 7. Inspect the generated outputs. The key files are:
    - `model/results/result.h5` — optimization results
    - `model/results/best_parameter_vector.tsv` — best-fit parameter vector
-   - `model/results/figures/` — generated plots for model fits and diagnostics
+   - `model/results/figures/` — generated plots for model fits and diagnostics. These figures are used in the Fig. 2 of the manuscript.
    - `model/results/simulation_0/` — generated plots for model simulations with the best-fit parameter vector
+
+8. Run the ensemble workflow from the `src/` directory to generate ensemble predictions and visualizations:
+   ```bash
+   python ensemble.py
+   ```
+   Setting `ens_from_profiles = False` in `src/ensemble.py` (line 1171) creates figures for Fig.3, setting `ens_from_profiles = True` creates figures for Fig.5.
+   The resulting figures are:
+   - `model/results/figures/ensemble_simulation` — These figures are used in the Fig. 3 and Fig. 5 of the manuscript.
+   - `model/results/figures/ensemble_simulation/states` - These figures are used in the Supporting Information Fig S4.
+   - `model/results/figures/parameter_uncertainty` — These figures are used in the Supporting Information Fig S3.
