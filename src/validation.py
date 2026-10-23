@@ -760,7 +760,7 @@ if __name__ == "__main__":
             os.path.join(results_dir, 'result.h5'),
             os.path.join(results_dir, "histories", 'hist_result.h5'),
             read_histories=False)
-        pr_path = os.path.join(results_dir, 'profile_results_combined.h5')
+        pr_path = os.path.join(results_dir, 'profile_results.h5')
         pypesto_profile_reader = ProfileResultHDF5Reader(pr_path)
         profile_read = pypesto_profile_reader.read()
         result.profile_result = profile_read.profile_result

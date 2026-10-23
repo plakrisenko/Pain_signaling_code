@@ -1149,7 +1149,7 @@ if __name__ == "__main__":
     model_name = config["model_name"]
     petab_dir = os.path.join(base_dir, "petab")
     yaml_file = os.path.join(petab_dir, config["petab_model_yaml"])
-    results_dir = os.path.join(base_dir, "results_full")
+    results_dir = os.path.join(base_dir, "results")
     figures_dir = os.path.join(results_dir, "figures")
 
     os.makedirs(figures_dir, exist_ok=True)
@@ -1169,7 +1169,7 @@ if __name__ == "__main__":
     visualize_ensemble_comparison(results_dir, figures_dir)
 
     ens_from_profiles = True
-    # Fig 3 (from_hist=False) and Fig 5 (from_hist=True)
+    # Fig 3 (ens_from_profiles=False) and Fig 5 (ens_from_profiles=True)
     # observables
     if ens_from_profiles:
         _, prediction = create_prediction_from_profiles(
@@ -1215,8 +1215,6 @@ if __name__ == "__main__":
         ('JI09_150302_Drg345_343_CycNuc__Rp8_pCPT_cAMPS_pAB_and_Fsk', 'Rp8_pCPT_cAMPS_pAB_time'),
     ]
 
-
-    # Figure 3 (if from_hist=False) and Figure 5 (if from_hist=True)
     datasets = [dataset_ids1, dataset_ids2]
     xlabel = ["Concentration [$\mu$M]", "Incubation Time [min]"]
     scales = ['log', 'linear']
@@ -1235,7 +1233,8 @@ if __name__ == "__main__":
             figurepath=os.path.join(figures_dir, "ensemble_simulation", exp_id,
                                         f"{exp_id}_{len(prediction.prediction_results)}_"
                                         f"{observable_id}_"
-                                        f"measurements_minmaxband.svg"),
+                                        f"measurements_minmaxband_"
+                                        f"{'from_profiles' if ens_from_profiles else 'from_endpoints'}.svg"),
             xlabel=xlabel[i],
             add_scaling=False,
             scale=scales[i]
@@ -1262,7 +1261,8 @@ if __name__ == "__main__":
             observable_id = observable_id,
             figurepath=os.path.join(figures_dir, "ensemble_simulation", e_id,
                                     f"{e_id}_{len(prediction.prediction_results)}_{observable_id}_"
-                                    f"measurements_minmaxband.svg"),
+                                    f"measurements_minmaxband"
+                                    f"{'from_profiles' if ens_from_profiles else 'from_endpoints'}.svg"),
             plot_measurements=True
         )
 
@@ -1275,7 +1275,8 @@ if __name__ == "__main__":
             observable_id = observable_id,
             figurepath=os.path.join(figures_dir, "ensemble_simulation", e_id,
                                     f"{e_id}_{len(prediction.prediction_results)}_{observable_id}_"
-                                    f"measurements_minmaxband.svg"),
+                                    f"measurements_minmaxband"
+                                    f"{'from_profiles' if ens_from_profiles else 'from_endpoints'}.svg"),
             plot_measurements=True
         )
 
@@ -1288,7 +1289,8 @@ if __name__ == "__main__":
             observable_id = observable_id,
             figurepath=os.path.join(figures_dir, "ensemble_simulation", e_id,
                                     f"{e_id}_{len(prediction.prediction_results)}_{observable_id}_"
-                                    f"measurements_minmaxband.svg"),
+                                    f"measurements_minmaxband"
+                                    f"{'from_profiles' if ens_from_profiles else 'from_endpoints'}.svg"),
             plot_measurements=True
         )
 
@@ -1304,7 +1306,8 @@ if __name__ == "__main__":
             observable_id = observable_id,
             figurepath=os.path.join(figures_dir, "ensemble_simulation", e_id,
                                     f"{e_id}_{len(prediction.prediction_results)}_{observable_id}_"
-                                    f"measurements_minmaxband.svg"),
+                                    f"measurements_minmaxband"
+                                    f"{'from_profiles' if ens_from_profiles else 'from_endpoints'}.svg"),
             plot_measurements=True
         )
 
