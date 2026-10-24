@@ -139,7 +139,7 @@ def visualize_optimization_result(results_dir: str,
     fval0 = results.optimize_result.fval[0]
 
     fig, ax = plt.subplots(figsize=(14, 10))
-    n_starts = 500
+    n_starts = min(500, len(results.optimize_result.fval))
     colors = [(1.0, 0.6, 0.6, 1.0) if results.optimize_result.fval[i]-fval0<=t else
               (0.8, 0.8, 0.8, 1) for i in range(n_starts)]
     colors[0] = (0.55, 0.1, 0.01, 1.0)
