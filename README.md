@@ -219,7 +219,7 @@ samples optimization starting points, runs the parameter estimation, and saves t
      The figure in Fig. 7 (c) is `model/results/figures/ensemble_simulation/in_silico/states/insilico_DAMGO_5HT__state_total_5HT4_<n_ens>.svg` or 
      `model/results/figures/ensemble_simulation/in_silico/states/insilico_Fentanyl_5HT__state_total_5HT4_<n_ens>.svg`, as these two figures are identical.
 
-11. Run optimization for the extended model and result visualization from the `src/` directory to generate visualizations for the feedback hypothesis:
+11. Run optimization and result visualization for the extended model  from the `src/` directory:
     ```bash
     python feedback_hypothesis.py
     ```

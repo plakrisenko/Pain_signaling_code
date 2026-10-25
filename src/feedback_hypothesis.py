@@ -153,7 +153,7 @@ if __name__ == "__main__":
     plt.savefig(os.path.join(figures_dir, 'feedback_parameter_histogram.svg'))
 
     get_best_parameters(results, n_par_vector=100, end_p=True,
-                        out_path=os.path.join(results_dir, "best_parameter_vector_100.tsv"))
+                        out_path=os.path.join(results_dir, "best_parameter_vectors_100.tsv"))
 
     # Figure 8a
     simulate_and_visualize(model_name, model, model_petab_problem,
