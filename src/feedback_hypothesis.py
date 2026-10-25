@@ -110,6 +110,24 @@ if __name__ == "__main__":
     )
 
     copy(config_path, results_dir)
+    # copy starting points generated for the core model
+    copied_startpoints_path = os.path.join(
+        results_dir,
+        f"parameter_startpoints_{config['optimize']['n_optimizations']}.tsv",
+    )
+    copy(
+        os.path.join(base_dir, "results",
+                    f"parameter_startpoints_{config['optimize']['n_optimizations']}.tsv"),
+        copied_startpoints_path,
+    )
+
+    startpoints_df = pd.read_csv(copied_startpoints_path, sep='\t')
+    # sample starting point for the feedback parameter
+    startpoints_df['xi_alphaI_betaI_gammaI__RIIp_cAMP'] = np.random.uniform(
+        np.log10(1e-5), np.log10(10000), size=len(startpoints_df)
+    )
+    startpoints_df.to_csv(copied_startpoints_path, sep='\t', index=False)
+
     optimize(
         model, model_petab_problem, base_dir,
         results_dir,
