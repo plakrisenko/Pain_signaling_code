@@ -1130,14 +1130,17 @@ def visualize_ensemble_comparison(results_folder, figures_dir):
         ax = ensemble_parameters_plot(
            ensemble, parameter_ids=model_p_ids, size=(15, 20))
         plt.tight_layout()
+
+        out_folder = os.path.join(figures_dir, 'parameter_uncertainty')
+        os.makedirs(out_folder, exist_ok=True)
         for ext in ['png', 'svg']:
-           plt.savefig(os.path.join(figures_dir, 'parameter_uncertainty',
+           plt.savefig(os.path.join(out_folder,
                                     f'ens_parameters_plot_99_modelparams_opt_{pf}.{ext}'))
 
         ax = ensemble_parameters_plot(ensemble, parameter_ids=scaling_p_ids, size=(20, 20))
         plt.tight_layout()
         for ext in ['png', 'svg']:
-            plt.savefig(os.path.join(figures_dir, 'parameter_uncertainty',
+            plt.savefig(os.path.join(out_folder,
                                      f'ens_parameters_plot_99_obsparams_opt_{pf}.{ext}'))
 
 

@@ -8,10 +8,21 @@ This repository contains all python files and (supplementary) figures for the ma
 ## Requirements
 This project relies on the following key software packages:
 
-  - [PEtab](https://github.com/PEtab-dev/libpetab-python) (v0.7.0)
-  - [AMICI](https://github.com/AMICI-dev/AMICI) (v0.34.2)
-  - [pyPESTO](https://github.com/ICB-DCM/pyPESTO) (v0.5.7)
-  - [Fides](https://github.com/fides-dev/fides) (v0.8.0)
+  - [PEtab](https://github.com/PEtab-dev/libpetab-python) (v0.7.0):
+    reads and validates the parameter estimation problem,
+    which is specified in the PEtab 1.0 format (see below).
+    [Documentation](https://petab.readthedocs.io/)
+  - [AMICI](https://github.com/AMICI-dev/AMICI) (v0.34.2):
+    simulates the model and computes gradients.
+    AMICI translates the SBML model into C++ code and compiles it into a Python module,
+    which is why a C++ compiler and further system dependencies are required (see step 3 below).
+    [Documentation](https://amici.readthedocs.io/en/v0.34.2/)
+  - [pyPESTO](https://github.com/ICB-DCM/pyPESTO) (v0.5.7):
+    performs parameter estimation, profile calculation, and ensemble analysis,
+    and stores the results in HDF5 files.
+    [Documentation](https://pypesto.readthedocs.io/)
+  - [Fides](https://github.com/fides-dev/fides) (v0.8.0):
+    the local optimizer used by pyPESTO.
 
 The analysis was performed using Python 3.11.1. Additional dependencies are listed in `requirements.txt`, 
 which can be installed with 
@@ -23,12 +34,23 @@ The listed versions correspond to those used in this study.
 ## Models and parameter estimation problems
 We developed a mechanistic model of PKA activity in nociceptive neurons that explicitly links 
 receptor activation to downstream kinase regulation. The model is implemented in the Systems Biology Markup Language ([SBML](https://sbml.org/)), 
-and the parameter estimation problem was described in the [PEtab format](https://github.com/PEtab-dev/PEtab). 
+and the parameter estimation problem was described in the [PEtab 1.0 format](https://github.com/PEtab-dev/PEtab). 
 PEtab is a standardized format for specifying parameter estimation problems in systems biology. 
 It combines a dynamic model (typically in SBML format) 
 with tab-separated values (TSV) files for descriptions of experimental data, 
 simulation conditions, observables, and parameters, enabling reproducible model calibration and 
 benchmarking across different software tools.
+
+The PEtab tables are plain `.tsv` files and can be inspected in any spreadsheet application. 
+Alternatively, the PEtab problems can be inspected with [PEtab-GUI](https://github.com/PEtab-dev/PEtab-GUI), 
+which is not required for the analysis.
+PEtab-GUI should be installed in an isolated environment, 
+since its dependencies are incompatible with those of the analysis environment.
+For example, using [pipx](https://pipx.pypa.io/):
+```bash
+pipx install petab-gui --pip-args='petab<0.10.0'
+petab_gui model/petab/PKAcycleMOR.yaml
+```
 
 PEtab files for the core model of PKA activity in nociceptive neurons are located in
 - `model/petab`  
@@ -149,7 +171,7 @@ samples optimization starting points, runs the parameter estimation, and saves t
 
 2. Create and activate a Python virtual environment:
    ```bash
-   python -m venv .venv
+   python3.11 -m venv .venv
    source .venv/bin/activate
    ```
 
@@ -208,7 +230,7 @@ samples optimization starting points, runs the parameter estimation, and saves t
 
 10. Run the in-silico experiments from the `src/` directory to generate in-silico experiment visualizations:
    ```bash
-   python in_silico.py
+   python in_silico_experiments.py
    ```
    The resulting figures are:
    - `model/results/figures/ensemble_simulation/in_silico` - These figures are used in the Fig. 7 of the manuscript.
