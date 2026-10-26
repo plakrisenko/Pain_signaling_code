@@ -10,6 +10,7 @@ Provided functions:
   from a PyPESTO `Result`.
 """
 
+import copy
 import os
 
 from typing import Optional, Sequence
@@ -64,6 +65,7 @@ def plot_residuals(petab_problem: petab.v1.Problem,
                          'legend.fontsize': 'small'
                          })
 
+    petab_problem = copy.deepcopy(petab_problem)
     measurement_df = petab_problem.measurement_df
     simulations_df = petab.v1.get_simulation_df(simu_df_path)
 
