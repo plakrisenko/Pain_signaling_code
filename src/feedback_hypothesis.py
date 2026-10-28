@@ -1,16 +1,16 @@
 import os
-import yaml
+from shutil import copy
 from typing import Optional
 
 import amici
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import petab
-import matplotlib.pyplot as plt
-from shutil import copy
+import yaml
 
-from utils import (_model_import, _setup_amici, read_optimization_results)
 from optimization import optimize, get_best_parameters, simulate_and_visualize
+from utils import (_model_import, _setup_amici, read_optimization_results)
 
 
 def simulate_states_petab(amici_model,
@@ -164,11 +164,8 @@ if __name__ == "__main__":
                            type='')
 
     # simulate fluxes for best parameter vectors and write to file
-    for i in range(30):
-        parameters_path = os.path.join(results_dir,
-                                       'best_parameter_vectors_100.tsv')
-        parameter_vector = pd.read_csv(parameters_path, sep='\t').values[i]
-        parameters = dict(zip(model_petab_problem.x_ids, parameter_vector))
+    n_starts = 5
+    for i in range(n_starts):
 
         result, amici_model = simulate_states_petab(
             model, model_petab_problem,
@@ -190,7 +187,7 @@ if __name__ == "__main__":
          'Fentanyl (1 $\mu$M)'),
          ('model1_data127', 'LK041_39_MOR_Kinetic_Fentanyl_Fsk___Fsk_and_Fentanyl01',
           'Fentanyl (0.1 $\mu$M)')]:
-        ids_set = list(range(5))
+        ids_set = list(range(n_starts))
         os.makedirs(os.path.join(figures_dir, 'fluxes'), exist_ok=True)
 
         # Figure 8d
