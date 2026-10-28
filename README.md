@@ -158,9 +158,12 @@ This repository includes several analysis scripts in `src/` used to run optimiza
 
 ## Reproducing the analysis
 
-The following steps reproduce the optimization and figure-generation workflow used in the manuscript. 
-The main entry point is `src/optimization.py`, which compiles the AMICI model, 
-samples optimization starting points, runs the parameter estimation, and saves the results in `model/results/`.
+There are two ways to reproduce the study results:
+
+1. Full analysis reproduction: run the optimization workflow from scratch. This is the most complete option, but it is computationally demanding because it re-estimates the model parameters and performs the associated uncertainty analysis.
+2. Figure reproduction from provided result files: if you do not want to rerun the optimization, you can use the shipped result files in `model/results/` (`result.h5`, `best_parameter_vector.tsv`, and `profile_results.h5`) to regenerate the figures.
+
+The main entry point for the full workflow is `src/optimization.py`, which compiles the AMICI model, samples optimization starting points, runs the parameter estimation, and saves the results in `model/results/`.
 
 1. Clone the repository and move into the project directory:
    ```bash
@@ -181,8 +184,10 @@ samples optimization starting points, runs the parameter estimation, and saves t
 
 4. Install the project requirements:
    ```bash
-   python -m pip install --upgrade pip
-   pip install -r requirements.txt
+   python -m pip install --upgrade pip                                      
+   echo "swig==4.4.0" > build-constraints.txt
+   pip cache remove amici 
+   pip install --build-constraint build-constraints.txt -r requirements.txt
    ```
 
 5. Adjust the simulation and optimization settings in `model/config.yaml` if needed. 
@@ -215,6 +220,7 @@ samples optimization starting points, runs the parameter estimation, and saves t
    ```bash
    python ensemble.py
    ```
+   Requires the optimization results from step 6.
    Setting `ens_from_profiles = False` in `src/ensemble.py` (line 1171) creates figures for Fig.3, setting `ens_from_profiles = True` creates figures for Fig.5.
    The resulting figures are:
    - `model/results/figures/ensemble_simulation` - These figures are used in the Fig. 3 and Fig. 5 of the manuscript.
@@ -225,6 +231,7 @@ samples optimization starting points, runs the parameter estimation, and saves t
    ```bash
    python validation.py
    ```
+   Requires the optimization results from step 6.
    The resulting figures are:
    - `model/results/figures/validation` - These figures are used in the Fig. 6 of the manuscript.
 
@@ -232,6 +239,7 @@ samples optimization starting points, runs the parameter estimation, and saves t
    ```bash
    python in_silico_experiments.py
    ```
+   Requires the optimization results from step 6.
    The resulting figures are:
    - `model/results/figures/ensemble_simulation/in_silico` - These figures are used in the Fig. 7 of the manuscript.
      The two figures in Fig. 7 (b) are 

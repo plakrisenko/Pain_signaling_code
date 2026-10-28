@@ -184,7 +184,7 @@ def run_visualization(model_name, model, model_petab_problem, config, petab_dir,
     )
 
     # simulate fluxes for best parameter vectors and write to file
-    n_starts = 5
+    n_starts = 30
     for i in range(n_starts):
         result, amici_model = simulate_states_petab(
             model, model_petab_problem,
@@ -243,7 +243,7 @@ if __name__ == "__main__":
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
 
-    model_name = config['model_name']
+    model_name = config['model_name'] + '_feedback'
     petab_dir = os.path.join(base_dir, 'petab_feedback')
     yaml_file = os.path.join(petab_dir, config['petab_model_yaml'])
     results_dir = os.path.join(base_dir, 'results_feedback')
