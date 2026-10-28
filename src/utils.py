@@ -9,6 +9,7 @@ This module provides helper functions to:
 """
 
 import os
+import sys
 from typing import Any, Dict, Optional, Tuple
 
 import amici
@@ -51,8 +52,9 @@ def _model_import(
 
     model_output_dir = os.path.join(base_dir, model_name)
 
-    os.environ['AMICI_CXXFLAGS'] = '-fopenmp'
-    os.environ['AMICI_LDFLAGS'] = '-fopenmp'
+    if sys.platform.startswith('linux'):
+        os.environ['AMICI_CXXFLAGS'] = '-fopenmp'
+        os.environ['AMICI_LDFLAGS'] = '-fopenmp'
     os.environ["AMICI_EXPERIMENTAL_SBML_NONCONST_CLS"] = "1"
 
     petab_problem = petab.v1.Problem.from_yaml(yaml_file)
