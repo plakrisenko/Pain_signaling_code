@@ -203,10 +203,18 @@ The main entry point for the full workflow is `src/optimization.py`, which compi
    To select parameters for which to compute posterior profiles, provide a list of parameter 
    indices to `create_profiles` function in `src/optimization.py`.
 
-6. Run the optimization workflow from the `src/` directory:
+6. Run the optimization workflow from the `src/` directory. The script supports a `--mode` flag with the following options:
+    - `full` (default option) runs the full analysis workflow (optimization, result export, and figure generation).
+    - `visualize-only` skips the expensive optimization step and regenerates figures from existing result files.    
+    Examples:
+    ```bash
+    python optimization.py --mode full
+    python optimization.py --mode visualize-only
+    ```
+    To reproduce the figures from the provided result files, use the `visualize-only` option:
    ```bash
    cd src
-   python optimization.py
+   python optimization.py --mode visualize-only
    ```
 
 7. Inspect the generated outputs. The key files are:
@@ -249,7 +257,11 @@ The main entry point for the full workflow is `src/optimization.py`, which compi
      The figure in Fig. 7 (c) is `model/results/figures/ensemble_simulation/in_silico/states/insilico_DAMGO_5HT__state_total_5HT4_<n_ens>.svg` or 
      `model/results/figures/ensemble_simulation/in_silico/states/insilico_Fentanyl_5HT__state_total_5HT4_<n_ens>.svg`, as these two figures are identical.
 
-11. Run optimization and result visualization for the extended model  from the `src/` directory:
+11. Run optimization and result visualization for the extended model from the `src/` directory:
     ```bash
     python feedback_hypothesis.py
+    ```
+    To reproduce the figures from the provided result files, use the `visualize-only` option:
+    ```bash
+    python feedback_hypothesis.py --mode visualize-only
     ```
