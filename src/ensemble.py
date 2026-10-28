@@ -1063,11 +1063,18 @@ def ensemble_parameters_plot(
 
 
 def visualize_ensemble_comparison(results_folder, figures_dir):
-    result = read_optimization_results(
-        os.path.join(results_folder, "result.h5"),
-        os.path.join(results_folder, "histories", "hist_result.h5"),
-        read_histories=True,
-    )
+    result_path = os.path.join(results_folder, "result.h5")
+    history_path = os.path.join(results_folder, "histories", "hist_result.h5")
+
+    if os.path.isfile(history_path):
+        result = read_optimization_results(
+           result_path,
+           history_path,
+           read_histories=True,
+        )
+    else:
+        result = read_optimization_results(result_path)
+
     pr_path = os.path.join(results_folder, 'profile_results.h5')
     pypesto_profile_reader = ProfileResultHDF5Reader(pr_path)
     profile_read = pypesto_profile_reader.read()
@@ -1081,9 +1088,12 @@ def visualize_ensemble_comparison(results_folder, figures_dir):
                                                        max_size=max_size,
                                                        rel_cutoff=th
                                                     )
-    my_ensemble_hist = Ensemble.from_optimization_history(result,
-                                                          max_size=max_size,
-                                                          rel_cutoff=th)
+
+    my_ensemble_hist = None
+    if os.path.isfile(history_path):
+        my_ensemble_hist = Ensemble.from_optimization_history(result,
+                                                              max_size=max_size,
+                                                              rel_cutoff=th)
 
     # Collect all x_path vectors from all ProfilerResults
     all_x_vectors = []
@@ -1110,8 +1120,13 @@ def visualize_ensemble_comparison(results_folder, figures_dir):
                                     lower_bound=result.problem.lb,
                                     upper_bound=result.problem.ub)
 
-    for ensemble, pf in zip([my_ensemble, my_ensemble_hist, my_ensemble_profiles],
-                            ['endpoints', 'history', 'profiles']):
+    ensemble_sequence = [my_ensemble, my_ensemble_profiles]
+    labels = ['endpoints', 'profiles']
+    if my_ensemble_hist is not None:
+        ensemble_sequence.append(my_ensemble_hist)
+        labels.append('history')
+
+    for ensemble, pf in zip(ensemble_sequence, labels):
         scaling_p = []
         model_p = []
         scaling_p_ids = []
@@ -1134,8 +1149,8 @@ def visualize_ensemble_comparison(results_folder, figures_dir):
         out_folder = os.path.join(figures_dir, 'parameter_uncertainty')
         os.makedirs(out_folder, exist_ok=True)
         for ext in ['png', 'svg']:
-           plt.savefig(os.path.join(out_folder,
-                                    f'ens_parameters_plot_99_modelparams_opt_{pf}.{ext}'))
+            plt.savefig(os.path.join(out_folder,
+                                     f'ens_parameters_plot_99_modelparams_opt_{pf}.{ext}'))
 
         ax = ensemble_parameters_plot(ensemble, parameter_ids=scaling_p_ids, size=(20, 20))
         plt.tight_layout()
@@ -1334,7 +1349,7 @@ if __name__ == "__main__":
             results_dir,
             max_n_vectors=np.inf,
             tolerances=config["tolerances"],
-            from_hist=True,
+            from_hist=False,
             simulate_states=True,
         )
 
