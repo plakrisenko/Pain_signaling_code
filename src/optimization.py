@@ -1,3 +1,4 @@
+import argparse
 import logging
 import os
 import yaml
@@ -244,6 +245,9 @@ def optimize(amici_model,
     with open(os.path.join(results_dir, "summary.txt"), "w") as text_file:
         text_file.write(summary)
 
+    get_best_parameters(minimize_result, n_par_vector=1, end_p=True,
+                        out_path=os.path.join(results_dir, "best_parameter_vector.tsv"))
+
     result_file_name = os.path.join(results_dir, file_name)
     problem_writer = ProblemHDF5Writer(result_file_name)
     problem_writer.write(pypesto_problem, overwrite=True)
@@ -322,17 +326,119 @@ def combine_profile_results(results,
     pypesto_profile_writer.write(results)
 
 
+def run_visualization(
+    model_name,
+    model,
+    model_petab_problem,
+    config,
+    petab_dir,
+    results_dir,
+    figures_dir,
+):
+    """Generate figures from existing optimization and profile results."""
+
+    result_path = os.path.join(results_dir, "result.h5")
+    profile_path = os.path.join(results_dir, "profile_results.h5")
+
+    if not os.path.isfile(result_path):
+        raise FileNotFoundError(f"Optimization results not found: {result_path}")
+
+    if not os.path.isfile(profile_path):
+        raise FileNotFoundError(f"Profile results not found: {profile_path}")
+
+    results = read_optimization_results(result_path)
+
+    simulate_and_visualize(
+        model_name,
+        model,
+        model_petab_problem,
+        config["tolerances"],
+        petab_dir,
+        figures_dir=figures_dir,
+        results_dir=results_dir,
+        type="smooth",
+    )
+
+    profile_reader = ProfileResultHDF5Reader(profile_path)
+    profile_read = profile_reader.read()
+    results.profile_result = profile_read.profile_result
+
+    visualize_profile_confidence_intervals(
+        results,
+        os.path.join(figures_dir, "parameter_uncertainty"),
+        rotation="v",
+    )
+
+
+def run_full_analysis(
+    model,
+    model_petab_problem,
+    config,
+    base_dir,
+    results_dir,
+    figures_dir,
+):
+    """Run parameter estimation and profile calculations."""
+
+    # Generate starting points
+    sample_startpoints(
+        model,
+        model_petab_problem,
+        base_dir,
+        results_dir,
+        config["optimize"]["n_optimizations"],
+        config["tolerances"],
+    )
+
+    config_path = os.path.join(base_dir, "config.yaml")
+    copy(config_path, results_dir)
+
+    optimize(
+        model,
+        model_petab_problem,
+        base_dir,
+        results_dir,
+        tolerances=config["tolerances"],
+        optimize_config=config["optimize"],
+        parameter_startpoints_path=os.path.join(
+            results_dir,
+            f"parameter_startpoints_{config['optimize']['n_optimizations']}.tsv",
+        ),
+    )
+
+    # Compute profiles for all parameters
+    create_profiles(
+        model,
+        model_petab_problem,
+        base_dir,
+        figures_dir=figures_dir,
+        result_path=os.path.join(results_dir, "result.h5"),
+        tolerances=config["tolerances"],
+        optimize_config=config["optimize"],
+    )
+
+
 if __name__ == "__main__":
-    base_dir = '../model'
-    config_path = os.path.join(base_dir, 'config.yaml')
-    with open(config_path, 'r') as file:
+    parser = argparse.ArgumentParser(
+        description="Perform parameter estimation, parameter uncertainty analysis and generate figures."
+    )
+    parser.add_argument(
+        "--mode",
+        choices=["full", "visualize-only"],
+        default="full",
+        help="Run the full analysis or visualize existing results (default: full).",
+    )
+    args = parser.parse_args()
+    base_dir = "../model"
+    config_path = os.path.join(base_dir, "config.yaml")
+    with open(config_path, "r") as file:
         config = yaml.safe_load(file)
 
-    model_name = config['model_name']
-    petab_dir = os.path.join(base_dir, 'petab')
-    yaml_file = os.path.join(petab_dir, config['petab_model_yaml'])
-    results_dir = os.path.join(base_dir, 'results')
-    figures_dir = os.path.join(results_dir, 'figures')
+    model_name = config["model_name"]
+    petab_dir = os.path.join(base_dir, "petab")
+    yaml_file = os.path.join(petab_dir, config["petab_model_yaml"])
+    results_dir = os.path.join(base_dir, "results")
+    figures_dir = os.path.join(results_dir, "figures")
 
     os.makedirs(figures_dir, exist_ok=True)
 
@@ -343,48 +449,22 @@ if __name__ == "__main__":
         force_compile=True
     )
 
-    sample_startpoints(model, model_petab_problem, base_dir, results_dir,
-                       config['optimize']['n_optimizations'],
-                       config['tolerances'])
-
-    copy(config_path, results_dir)
-    optimize(
-        model, model_petab_problem, base_dir,
-        results_dir,
-        tolerances=config['tolerances'],
-        optimize_config=config['optimize'],
-        parameter_startpoints_path=os.path.join(
+    if args.mode == "full":
+        run_full_analysis(
+            model,
+            model_petab_problem,
+            config,
+            base_dir,
             results_dir,
-            f"parameter_startpoints_{config['optimize']['n_optimizations']}.tsv"))
+            figures_dir,
+        )
 
-    results = read_optimization_results(os.path.join(results_dir, 'result.h5'),
-                                        os.path.join(results_dir, 'histories', 'hist_result.h5'),
-                                       read_histories=False)
-
-    get_best_parameters(results, n_par_vector=1, end_p=True,
-                        out_path=os.path.join(results_dir, "best_parameter_vector.tsv"))
-
-    simulate_and_visualize(model_name, model, model_petab_problem,
-                           config['tolerances'],
-                           petab_dir,
-                           figures_dir=figures_dir,
-                           results_dir=results_dir,
-                           type='')
-
-    # compute posteriors profiles for all parameters
-    create_profiles(model, model_petab_problem, base_dir,
-                    figures_dir=figures_dir,
-                    result_path=os.path.join(results_dir, 'result.h5'),
-                    tolerances=config['tolerances'],
-                    optimize_config=config['optimize'])
-
-
-    pypesto_profile_reader = ProfileResultHDF5Reader(
-       os.path.join(results_dir, 'profile_results.h5'))
-    profile_read = pypesto_profile_reader.read()
-    results.profile_result = profile_read.profile_result
-
-    # Fig 4
-    visualize_profile_confidence_intervals(results,
-                                           os.path.join(figures_dir, 'parameter_uncertainty'),
-                                           rotation='v')
+    run_visualization(
+        model_name,
+        model,
+        model_petab_problem,
+        config,
+        petab_dir,
+        results_dir,
+        figures_dir,
+    )
