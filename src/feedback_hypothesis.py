@@ -1,3 +1,4 @@
+import argparse
 import os
 from shutil import copy
 from typing import Optional
@@ -88,85 +89,103 @@ def visualize_Gactivity_flux(condition_fluxes_list, fluxes_to_plot, outpath, tit
     plt.close(fig)
 
 
-if __name__ == "__main__":
-    base_dir = '../model'
+def run_full_analysis(base_dir, model, model_petab_problem, config, results_dir):
     config_path = os.path.join(base_dir, 'config.yaml')
-    with open(config_path, 'r') as file:
-        config = yaml.safe_load(file)
-
-    model_name = config['model_name']
-    petab_dir = os.path.join(base_dir, 'petab_feedback')
-    yaml_file = os.path.join(petab_dir, config['petab_model_yaml'])
-    results_dir = os.path.join(base_dir, 'results_feedback')
-    figures_dir = os.path.join(results_dir, 'figures')
-
-    os.makedirs(figures_dir, exist_ok=True)
-
-    model, model_petab_problem = _model_import(
-        base_dir=base_dir,
-        yaml_file=yaml_file,
-        model_name=model_name,
-        force_compile=True
-    )
-
     copy(config_path, results_dir)
+
     # copy starting points generated for the core model
     copied_startpoints_path = os.path.join(
         results_dir,
         f"parameter_startpoints_{config['optimize']['n_optimizations']}.tsv",
     )
     copy(
-        os.path.join(base_dir, "results",
-                    f"parameter_startpoints_{config['optimize']['n_optimizations']}.tsv"),
+        os.path.join(
+            base_dir,
+            'results',
+            f"parameter_startpoints_{config['optimize']['n_optimizations']}.tsv",
+        ),
         copied_startpoints_path,
     )
 
     startpoints_df = pd.read_csv(copied_startpoints_path, sep='\t')
     # sample starting point for the feedback parameter
     startpoints_df['xi_alphaI_betaI_gammaI__RIIp_cAMP'] = np.random.uniform(
-        np.log10(1e-5), np.log10(10000), size=len(startpoints_df)
+        np.log10(1e-5),
+        np.log10(10000),
+        size=len(startpoints_df),
     )
     startpoints_df.to_csv(copied_startpoints_path, sep='\t', index=False)
 
     optimize(
-        model, model_petab_problem, base_dir,
+        model,
+        model_petab_problem,
+        base_dir,
         results_dir,
         tolerances=config['tolerances'],
         optimize_config=config['optimize'],
-        parameter_startpoints_path=os.path.join(
-            results_dir,
-            f"parameter_startpoints_{config['optimize']['n_optimizations']}.tsv"))
+        parameter_startpoints_path=copied_startpoints_path,
+    )
 
-    results = read_optimization_results(os.path.join(results_dir, 'result.h5'),
-                                        os.path.join(results_dir, 'histories', 'hist_result.h5'),
-                                       read_histories=False)
+    results = read_optimization_results(
+        os.path.join(results_dir, 'result.h5'),
+        os.path.join(results_dir, 'histories', 'hist_result.h5'),
+        read_histories=False,
+    )
+    get_best_parameters(
+        results,
+        n_par_vector=100,
+        end_p=True,
+        out_path=os.path.join(results_dir, 'best_parameter_vectors_100.tsv'),
+    )
+
+
+def run_visualization(model_name, model, model_petab_problem, config, petab_dir, results_dir, figures_dir):
+    result_path = os.path.join(results_dir, 'result.h5')
+    if not os.path.isfile(result_path):
+        raise FileNotFoundError(f"Optimization results not found: {result_path}")
+
+    results = read_optimization_results(
+        result_path,
+        os.path.join(results_dir, 'histories', 'hist_result.h5'),
+        read_histories=False,
+    )
 
     ######### feedback_parameter_histogram, Figure 8C #########
     fval0 = results.optimize_result.list[0].fval
-    feedback_parameters = [r.x[-1] for r in results.optimize_result.list[:100] if r.fval < fval0 + 3.32]
-    print(len(feedback_parameters))
+    feedback_parameters = [
+        r.x[-1] for r in results.optimize_result.list[:100] if r.fval < fval0 + 3.32
+    ]
     fig, ax = plt.subplots(figsize=(8.5, 6.8))
     ax.hist(feedback_parameters, color="#FF800E", alpha=0.8)
-    ax.set_title('$\\xi_{G_I\_\\text{pRII}_{\\text{cAMP}}}$') #parameter_names_display(results.problem.x_names[-1])
+    ax.set_title('$\\xi_{G_I\_\\text{pRII}_{\\text{cAMP}}}$')
     ax.set_xlabel('log$_{10}$(parameter value)')
     ax.set_ylabel('Frequency')
     plt.savefig(os.path.join(figures_dir, 'feedback_parameter_histogram.svg'))
+    plt.close(fig)
 
-    get_best_parameters(results, n_par_vector=100, end_p=True,
-                        out_path=os.path.join(results_dir, "best_parameter_vectors_100.tsv"))
+    if not os.path.isfile(os.path.join(results_dir, 'best_parameter_vectors_100.tsv')):
+        get_best_parameters(
+            results,
+            n_par_vector=100,
+            end_p=True,
+            out_path=os.path.join(results_dir, 'best_parameter_vectors_100.tsv'),
+        )
 
     # Figure 8a
-    simulate_and_visualize(model_name, model, model_petab_problem,
-                           config['tolerances'],
-                           petab_dir,
-                           figures_dir=figures_dir,
-                           results_dir=results_dir,
-                           type='')
+    simulate_and_visualize(
+        model_name,
+        model,
+        model_petab_problem,
+        config['tolerances'],
+        petab_dir,
+        figures_dir=figures_dir,
+        results_dir=results_dir,
+        type='smooth',
+    )
 
     # simulate fluxes for best parameter vectors and write to file
     n_starts = 5
     for i in range(n_starts):
-
         result, amici_model = simulate_states_petab(
             model, model_petab_problem,
             tolerances=config['tolerances'],
@@ -205,3 +224,49 @@ if __name__ == "__main__":
                                  f'{condition}_MOR_feedback_percent.svg'),
             title=title
         )
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='Perform the feedback-hypothesis optimization and/or generate the associated figures.'
+    )
+    parser.add_argument(
+        '--mode',
+        choices=['full', 'visualize-only'],
+        default='full',
+        help='Run the full analysis or visualize existing results (default: full).',
+    )
+    args = parser.parse_args()
+
+    base_dir = '../model'
+    config_path = os.path.join(base_dir, 'config.yaml')
+    with open(config_path, 'r') as file:
+        config = yaml.safe_load(file)
+
+    model_name = config['model_name']
+    petab_dir = os.path.join(base_dir, 'petab_feedback')
+    yaml_file = os.path.join(petab_dir, config['petab_model_yaml'])
+    results_dir = os.path.join(base_dir, 'results_feedback')
+    figures_dir = os.path.join(results_dir, 'figures')
+
+    os.makedirs(figures_dir, exist_ok=True)
+
+    model, model_petab_problem = _model_import(
+        base_dir=base_dir,
+        yaml_file=yaml_file,
+        model_name=model_name,
+        force_compile=True
+    )
+
+    if args.mode == 'full':
+        run_full_analysis(base_dir, model, model_petab_problem, config, results_dir)
+
+    run_visualization(
+        model_name,
+        model,
+        model_petab_problem,
+        config,
+        petab_dir,
+        results_dir,
+        figures_dir,
+    )
