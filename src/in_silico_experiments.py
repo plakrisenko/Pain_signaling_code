@@ -52,7 +52,7 @@ if __name__ == "__main__":
             results_dir,
             max_n_vectors=np.inf,
             tolerances=config["tolerances"],
-            from_hist=True,
+            from_hist=False,
             simulate_states=False,
         )
 
@@ -94,7 +94,7 @@ if __name__ == "__main__":
             results_dir,
             max_n_vectors=np.inf,
             tolerances=config["tolerances"],
-            from_hist=True,
+            from_hist=False,
             simulate_states=True,
         )
 
