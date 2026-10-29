@@ -165,6 +165,23 @@ There are two ways to reproduce the study results:
 
 The main entry point for the full workflow is `src/optimization.py`, which compiles the AMICI model, samples optimization starting points, runs the parameter estimation, and saves the results in `model/results/`.
 
+### Note on large result files and Git LFS
+The repository includes large analysis outputs such as `model/results/result.h5`, `model/results/profile_results.h5`. 
+These artifacts are tracked with Git LFS and are around 380 MB in size.
+If you clone the repository without Git LFS installed, Git will download pointer files instead of 
+the actual data, and the scripts will fail when they try to read the missing .h5 result files.
+Before cloning, install Git LFS:
+```bash
+git lfs install
+```
+Then fetch the large files:
+```bash
+git lfs pull
+```
+If you do not want to rely on Git LFS bandwidth limits, 
+a Zenodo archive (mentioned above) is the safer option for downloading the full result set.
+
+### To reproduce the analysis, follow these steps:
 1. Clone the repository and move into the project directory:
    ```bash
    git clone https://github.com/plakrisenko/Pain_signaling_code.git
@@ -224,6 +241,9 @@ The main entry point for the full workflow is `src/optimization.py`, which compi
    - `model/results/figures/` - generated plots for model fits and diagnostics. These figures are used in the Fig. 2 of the manuscript.
    - `model/results/simulation_0/` - generated plots for model simulations with the best-fit parameter vector
    - `model/results/figures/parameter_uncertainty/profile_cis*` and `model/results/figures/parameter_uncertainty/identifiability_fraction*`- These figures are used in the Fig. 4 of the manuscript.
+   The optimization histories (`model/results/histories/hist_result.h5`) are not included because of their size. 
+   They are only needed for history-based ensembles, which are not used in the manuscript. 
+   `optimization.py --mode full` creates the histories.
 
 8. Run the ensemble workflow from the `src/` directory to generate ensemble predictions and visualizations:
    ```bash
