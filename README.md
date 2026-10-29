@@ -226,6 +226,7 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
     - `visualize-only` skips the expensive optimization step and regenerates figures from existing result files.    
     Examples:
     ```bash
+    cd src
     python optimization.py --mode full
     python optimization.py --mode visualize-only
     ```
@@ -286,3 +287,9 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
     ```bash
     python feedback_hypothesis.py --mode visualize-only
     ```
+    The resulting figures include:
+    - `model/results_feedback/figures` - include waterfall plot, scatter plots for the experimental data and model simulations for the MAP estimate, and flux visualizations. 
+    - `model/results/simulation_0/` - generated plots for model simulations with the best-fit parameter vector
+    - `model/results_feedback/figures/PKAcycleMOR_waterfall_500.svg` - This figure is used in the Fig. 8 (b).
+    - `model/results_feedback/figures/feedback_parameter_histogram.svg` - These figure is used in the Fig. 8 (c).
+    - `model/results_feedback/figures/fluxes/` - These figures are used in the Fig. 8 (d).
