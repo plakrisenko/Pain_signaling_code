@@ -15,7 +15,7 @@ def parse_args():
     parser.add_argument(
         "--ensemble-source",
         choices=["profiles", "endpoints"],
-        default="profiles",
+        default="endpoints",
         help="Source of parameter vectors for ensemble predictions (default: profiles).",
     )
     return parser.parse_args()

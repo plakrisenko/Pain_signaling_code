@@ -247,15 +247,23 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
    They are only needed for history-based ensembles, which are not used in the manuscript. 
    `optimization.py --mode full` creates the histories.
 
-8. Run the ensemble workflow from the `src/` directory to generate ensemble predictions and visualizations:
+8. Run the ensemble workflow from the `src/` directory to generate ensemble predictions and visualizations.
    ```bash
    python ensemble.py
    ```
-   Requires the optimization results from step 6. Simulating full ensembles can be memory-intensive, 
-   may require more than 40 GB of RAM, and takes around 7 hours. 
+   Requires the optimization results from step 6.
+
+   To create figures for Fig.3 run
+   ```bash
+   python ensemble.py --ensemble-source endpoints
+   ```
+   To create figures for Fig.5 run
+   ```bash
+   python ensemble.py --ensemble-source profiles
+   ```
+   Simulating full ensemble from profiles can be memory-intensive, it may require more than 40 GB of RAM, and takes around 7 hours. 
    If you encounter memory issues, consider reducing the number of ensemble members by adjusting the 
-   `max_n_vectors` parameter in `create_prediction_from_profiles` call in `src/ensemble.py`. 
-   Setting `ens_from_profiles = False` in `src/ensemble.py` (line 1171) creates figures for Fig.3, setting `ens_from_profiles = True` creates figures for Fig.5.
+   `max_n_vectors` parameter in `create_prediction_from_profiles` call in `src/ensemble.py`.
    The resulting figures are:
    - `model/results/figures/ensemble_simulation` - These figures are used in the Fig. 3 and Fig. 5 of the manuscript.
    - `model/results/figures/ensemble_simulation/states` - These figures are used in the Supporting Information Fig S4.
@@ -265,7 +273,9 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
    ```bash
    python validation.py
    ```
-   Requires the optimization results from step 6. Similarly to step 8, simulating full ensembles can be memory-intensive.
+   Requires the optimization results from step 6. Similarly to step 8, command line arguments 
+   `--ensemble-source endpoints` or `--ensemble-source profiles` can be used to select the source 
+   of parameter vectors for ensemble predictions. Simulating full ensemble from profiles is memory-intensive.
    The resulting figures are:
    - `model/results/figures/validation` - These figures are used in the Fig. 6 of the manuscript.
 
@@ -273,7 +283,9 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
    ```bash
    python in_silico_experiments.py
    ```
-   Requires the optimization results from step 6. Similarly to step 8, simulating full ensembles can be memory-intensive.
+   Requires the optimization results from step 6. Similarly to step 8, command line arguments 
+   `--ensemble-source endpoints` or `--ensemble-source profiles` can be used to select the source 
+   of parameter vectors for ensemble predictions. Simulating full ensemble from profiles is memory-intensive.
    The resulting figures are:
    - `model/results/figures/ensemble_simulation/in_silico` - These figures are used in the Fig. 7 of the manuscript.
      The two figures in Fig. 7 (b) are 
