@@ -180,7 +180,8 @@ The main entry point for the full workflow is `src/optimization.py`, which compi
 
 3. Install the AMICI system requirements. The AMICI installation guide is the authoritative reference for platform-specific prerequisites:
    https://amici.readthedocs.io/en/v0.34.2/python_installation.html.
-   In particular, make sure that the required C/C++ toolchain and SWIG dependencies are installed before installing the Python package.
+   In particular, make sure that the required C/C++ toolchain and SWIG dependencies are installed before installing the Python package. 
+   On macOS, a C++ compiler is provided by the Xcode Command Line Tools (`xcode-select --install`).
 
 4. Install the project requirements:
    ```bash
