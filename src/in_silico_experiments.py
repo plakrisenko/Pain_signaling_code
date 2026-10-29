@@ -1,3 +1,4 @@
+import argparse
 import os
 import yaml
 
@@ -7,8 +8,22 @@ from ensemble import (create_prediction, create_prediction_from_profiles, visual
                       visualize_ensemble_states)
 from utils import (_model_import)
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Generate ensemble figures from parameter profiles or endpoints."
+    )
+    parser.add_argument(
+        "--ensemble-source",
+        choices=["profiles", "endpoints"],
+        default="profiles",
+        help="Source of parameter vectors for ensemble predictions (default: profiles).",
+    )
+    return parser.parse_args()
 
 if __name__ == "__main__":
+    args = parse_args()
+    ens_from_profiles = args.ensemble_source == "profiles"
+
     base_dir = "../model/"
     with open(os.path.join(base_dir, "config.yaml"), "r") as file:
         config = yaml.safe_load(file)
@@ -31,7 +46,6 @@ if __name__ == "__main__":
     )
 
     measurement_df = None
-    ens_from_profiles = True
 
     # observables
     if ens_from_profiles:

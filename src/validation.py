@@ -1,10 +1,11 @@
-import amici
+import argparse
 import copy
 import os
 import yaml
 
 from typing import Tuple
 
+import amici
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -727,13 +728,29 @@ def simulate_and_visualize_exp2(config, ens_from="profiles"):
         )
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Generate ensemble figures from parameter profiles or endpoints."
+    )
+    parser.add_argument(
+        "--ensemble-source",
+        choices=["profiles", "endpoints"],
+        default="profiles",
+        help="Source of parameter vectors for ensemble predictions (default: profiles).",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
+    args = parse_args()
+    ens_from = args.ensemble_source
+
     base_dir = "../model/"
     with open(os.path.join(base_dir, "config.yaml"), "r") as file:
         config = yaml.safe_load(file)
 
     # validation of dataset 2, Figure 6a
-    simulate_and_visualize_exp2(config, ens_from = "profiles")
+    simulate_and_visualize_exp2(config, ens_from = ens_from)
 
     # validation of dataset 13 and 14 with scaling estimation, Figure 6b and 6c
     exp_with_scaling_estimate = True
@@ -766,7 +783,6 @@ if __name__ == "__main__":
         alpha = 0.01
         th = stats.chi2.ppf(1 - alpha, 1) / 2
 
-        ens_from = 'profiles' # 'history', 'endpoints'
         max_size = np.inf
         if ens_from == 'history':
             my_ensemble = Ensemble.from_optimization_history(result,
