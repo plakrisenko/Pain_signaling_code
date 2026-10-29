@@ -348,16 +348,17 @@ def run_visualization(
 
     results = read_optimization_results(result_path)
 
-    simulate_and_visualize(
-        model_name,
-        model,
-        model_petab_problem,
-        config["tolerances"],
-        petab_dir,
-        figures_dir=figures_dir,
-        results_dir=results_dir,
-        type="smooth",
-    )
+    for stype in ["smooth", ""]:
+        simulate_and_visualize(
+            model_name,
+            model,
+            model_petab_problem,
+            config["tolerances"],
+            petab_dir,
+            figures_dir=figures_dir,
+            results_dir=results_dir,
+            type=stype,
+        )
 
     profile_reader = ProfileResultHDF5Reader(profile_path)
     profile_read = profile_reader.read()

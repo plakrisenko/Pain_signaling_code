@@ -170,16 +170,17 @@ def run_visualization(model_name, model, model_petab_problem, config, petab_dir,
         )
 
     # Figure 8a
-    simulate_and_visualize(
-        model_name,
-        model,
-        model_petab_problem,
-        config['tolerances'],
-        petab_dir,
-        figures_dir=figures_dir,
-        results_dir=results_dir,
-        type='smooth',
-    )
+    for stype in ['', 'smooth']:
+        simulate_and_visualize(
+            model_name,
+            model,
+            model_petab_problem,
+            config['tolerances'],
+            petab_dir,
+            figures_dir=figures_dir,
+            results_dir=results_dir,
+            type=stype,
+        )
 
     # simulate fluxes for best parameter vectors and write to file
     n_starts = 30
