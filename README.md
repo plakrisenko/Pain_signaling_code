@@ -235,6 +235,7 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
    cd src
    python optimization.py --mode visualize-only
    ```
+   This step might require around 5GB of RAM and around 10 minutes of runtime on a standard laptop.
 
 7. Inspect the generated outputs. The key files are:
    - `model/results/result.h5` - optimization results
@@ -250,7 +251,10 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
    ```bash
    python ensemble.py
    ```
-   Requires the optimization results from step 6.
+   Requires the optimization results from step 6. Simulating full ensembles can be memory-intensive, 
+   may require more than 40 GB of RAM, and takes around 7 hours. 
+   If you encounter memory issues, consider reducing the number of ensemble members by adjusting the 
+   `max_n_vectors` parameter in `create_prediction_from_profiles` call in `src/ensemble.py`. 
    Setting `ens_from_profiles = False` in `src/ensemble.py` (line 1171) creates figures for Fig.3, setting `ens_from_profiles = True` creates figures for Fig.5.
    The resulting figures are:
    - `model/results/figures/ensemble_simulation` - These figures are used in the Fig. 3 and Fig. 5 of the manuscript.
@@ -261,7 +265,7 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
    ```bash
    python validation.py
    ```
-   Requires the optimization results from step 6.
+   Requires the optimization results from step 6. Similarly to step 8, simulating full ensembles can be memory-intensive.
    The resulting figures are:
    - `model/results/figures/validation` - These figures are used in the Fig. 6 of the manuscript.
 
@@ -269,7 +273,7 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
    ```bash
    python in_silico_experiments.py
    ```
-   Requires the optimization results from step 6.
+   Requires the optimization results from step 6. Similarly to step 8, simulating full ensembles can be memory-intensive.
    The resulting figures are:
    - `model/results/figures/ensemble_simulation/in_silico` - These figures are used in the Fig. 7 of the manuscript.
      The two figures in Fig. 7 (b) are 
@@ -287,6 +291,7 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
     ```bash
     python feedback_hypothesis.py --mode visualize-only
     ```
+    This step might require around 5GB of RAM and around 20 minutes of runtime on a standard laptop.
     The resulting figures include:
     - `model/results_feedback/figures` - include waterfall plot, scatter plots for the experimental data and model simulations for the MAP estimate, and flux visualizations. 
     - `model/results/simulation_0/` - generated plots for model simulations with the best-fit parameter vector
