@@ -1,3 +1,4 @@
+import argparse
 import copy
 import os
 import yaml
@@ -1159,7 +1160,23 @@ def visualize_ensemble_comparison(results_folder, figures_dir):
                                      f'ens_parameters_plot_99_obsparams_opt_{pf}.{ext}'))
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Generate ensemble figures from parameter profiles or endpoints."
+    )
+    parser.add_argument(
+        "--ensemble-source",
+        choices=["profiles", "endpoints"],
+        default="profiles",
+        help="Source of parameter vectors for ensemble predictions (default: profiles).",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
+    args = parse_args()
+    ens_from_profiles = args.ensemble_source == "profiles"
+
     base_dir = "../model/"
     with open(os.path.join(base_dir, "config.yaml"), "r") as file:
         config = yaml.safe_load(file)
@@ -1186,7 +1203,6 @@ if __name__ == "__main__":
 
     visualize_ensemble_comparison(results_dir, figures_dir)
 
-    ens_from_profiles = True
     # Fig 3 (ens_from_profiles=False) and Fig 5 (ens_from_profiles=True)
     # observables
     if ens_from_profiles:
