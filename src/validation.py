@@ -757,9 +757,7 @@ if __name__ == "__main__":
             os.path.join(petab_dir, 'measurementData_PKAcycleMOR_only_validation.tsv'))
 
         result = read_optimization_results(
-            os.path.join(results_dir, 'result.h5'),
-            os.path.join(results_dir, "histories", 'hist_result.h5'),
-            read_histories=False)
+            os.path.join(results_dir, 'result.h5'))
         pr_path = os.path.join(results_dir, 'profile_results.h5')
         pypesto_profile_reader = ProfileResultHDF5Reader(pr_path)
         profile_read = pypesto_profile_reader.read()

@@ -1329,7 +1329,7 @@ if __name__ == "__main__":
             plot_measurements=True
         )
 
-    # for Supplementary Figure S4:
+    # for Supplementary Figure S4 (ens_from_profiles=True):
     # states
     if ens_from_profiles:
         ensemble, prediction = create_prediction_from_profiles(

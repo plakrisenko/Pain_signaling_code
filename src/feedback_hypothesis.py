@@ -128,7 +128,6 @@ def run_full_analysis(base_dir, model, model_petab_problem, config, results_dir)
 
     results = read_optimization_results(
         os.path.join(results_dir, 'result.h5'),
-        os.path.join(results_dir, 'histories', 'hist_result.h5'),
         read_histories=False,
     )
     get_best_parameters(
@@ -146,7 +145,6 @@ def run_visualization(model_name, model, model_petab_problem, config, petab_dir,
 
     results = read_optimization_results(
         result_path,
-        os.path.join(results_dir, 'histories', 'hist_result.h5'),
         read_histories=False,
     )
 
