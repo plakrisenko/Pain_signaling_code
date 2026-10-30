@@ -161,13 +161,14 @@ This repository includes several analysis scripts in `src/` used to run optimiza
 There are two ways to reproduce the study results:
 
 1. Full analysis reproduction: run the optimization workflow from scratch. This is the most complete option, but it is computationally demanding because it re-estimates the model parameters and performs the associated uncertainty analysis.
-2. Figure reproduction from provided result files: if you do not want to rerun the optimization, you can use the shipped result files in `model/results/` (`result.h5`, `best_parameter_vector.tsv`, and `profile_results.h5`) to regenerate the figures.
+2. Figure reproduction from provided result files: if you do not want to rerun the optimization, you can use the shipped result files in `model/results/` (`result.h5`, `best_parameter_vector.tsv`, and `profile_results.h5`), 
+   as well as in `model/results_feedback/`, to regenerate the figures.
 
 The main entry point for the full workflow is `src/optimization.py`, which compiles the AMICI model, samples optimization starting points, runs the parameter estimation, and saves the results in `model/results/`.
 
 ### Note on large result files and Git LFS
 The repository includes large analysis outputs such as `model/results/result.h5`, `model/results/profile_results.h5`. 
-These artifacts are tracked with Git LFS and are around 380 MB in size.
+These artifacts are tracked with Git LFS and are around 380 MB and 3MB in size, respectively.
 If you clone the repository without Git LFS installed, Git will download pointer files instead of 
 the actual data, and the scripts will fail when they try to read the missing .h5 result files.
 Before cloning, install Git LFS:
@@ -243,6 +244,7 @@ a Zenodo archive (mentioned above) is the safer option for downloading the full 
    - `model/results/figures/` - generated plots for model fits and diagnostics. These figures are used in the Fig. 2 of the manuscript.
    - `model/results/simulation_0/` - generated plots for model simulations with the best-fit parameter vector
    - `model/results/figures/parameter_uncertainty/profile_cis*` and `model/results/figures/parameter_uncertainty/identifiability_fraction*`- These figures are used in the Fig. 4 of the manuscript.
+   
    The optimization histories (`model/results/histories/hist_result.h5`) are not included because of their size. 
    They are only needed for history-based ensembles, which are not used in the manuscript. 
    `optimization.py --mode full` creates the histories.

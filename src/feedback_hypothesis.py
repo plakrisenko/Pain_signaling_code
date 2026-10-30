@@ -182,6 +182,12 @@ def run_visualization(model_name, model, model_petab_problem, config, petab_dir,
             type=stype,
         )
 
+    extended_measurements_df = pd.read_csv(
+        os.path.join(petab_dir, 'measurements_smooth.tsv'),
+        sep='\t'
+    )
+    model_petab_problem.measurement_df = extended_measurements_df
+
     # simulate fluxes for best parameter vectors and write to file
     n_starts = 30
     for i in range(n_starts):
